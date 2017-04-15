@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/components/Login'
+import Login from '../components/Login'
+import Editor from '../components/Editor'
+import {isLoggedIn} from '../api/api'
 
 Vue.use(Router)
 
-const router = new Router({
+let router = new Router({
+  mode: 'history',
   routes: [{
     path: '/',
     name: 'login',
@@ -12,6 +15,16 @@ const router = new Router({
     meta: {
       requiresAuth: false
     }
+  }, {
+    path: '/editor',
+    name: 'editor',
+    component: Editor,
+    meta: {
+      requiresAuth: true
+    }
+  }, {
+    path: '*',
+    redirect: '/editor',
   }]
 })
 
