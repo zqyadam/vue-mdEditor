@@ -1,21 +1,42 @@
-# vue-mdeditor
+# vue-mdEditor
 
-> A Vue.js project
+> A Markdown Editor based on Vue.js and LeanCloud
 
-## Build Setup
+## 待实现功能
+- [ ] 登录/注册
+- [ ] 编辑
+	- 工具栏功能
+    - [ ] 新建/打开/保存
+    - [ ] 撤销
+    - [ ] 重做
+    - [ ] 加粗
+    - [ ] 倾斜
+    - [ ] 引用
+    - [ ] 标题1
+    - [ ] 标题2
+    - [ ] 标题3
+    - [ ] 标题4
+    - [ ] 标题5
+    - [ ] 标题6
+    - [ ] 无序列表
+    - [ ] 有序列表
+    - [ ] 横线
+    - [ ] 链接
+    - [ ] 图片上传（对话框上传/拖拽上传/粘贴上传）
+    - [ ] 行内代码
+    - [ ] 代码块
+    - [ ] 实时预览（双栏显示）
+    - [ ] 编辑模式
+    - [ ] 阅读模式
+    - [ ] 左右交换
+	- 编辑器
+    - [ ] 同步滚动
+    - [ ] TOC目录
+- [ ] 管理
+	- [ ] 文章管理
+	- [ ] 图像管理
+	- [ ] 基本设置
 
-``` bash
-# install dependencies
-npm install
+## 什么都没有做.....
 
-# serve with hot reload at localhost:8080
-npm run dev
 
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
