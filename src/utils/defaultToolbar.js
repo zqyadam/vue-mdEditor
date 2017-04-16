@@ -28,7 +28,7 @@ export const toolbarIconsClass = {
   'editMode':'z-bianji',
   'readMode':'z-computer',
   'exchange':'z-exchange',
-  
+
 }
 
 export const toolbarIconTips = {
@@ -237,6 +237,18 @@ export const toolbarHandlers = {
       line: pos.line,
       ch: pos.ch - 1
     })
+  },
+  // 向后添加行
+  addNewLineAppend:function(cm){  // Ctrl+Enter
+    let pos = cm.getCursor();
+    cm.setCursor({ line: pos.line + 1, ch: 0 });
+    cm.replaceSelection('\n','start')
+  },
+  // 向前添加行
+  addNewLinePrepend:function(cm){ // Ctrl+Shift+Enter
+    let pos = cm.getCursor();
+    cm.setCursor({ line: pos.line, ch: 0 });
+    cm.replaceSelection('\n','start')
   }
 }
 
@@ -281,63 +293,3 @@ let Common = (function() {
   }
 })()
 
-
-/*
-
-dialog format
-a full dialog 
-{
-  show: true,
-  title: '插入链接',
-  formElements: [{
-      //Input、Select、Checkbox、Radio、Switch
-      label: '链接地址:',
-      type: 'input',
-      value: 'http://'
-    }, {
-      label: '链接内容',
-      type: 'input',
-      value: defaultText
-    },
-    {
-      type: 'select',
-      value: '',
-      label: '选择地址:',
-      options: [{
-        label: 'label 1',
-        value: 'shanghai'
-      }, {
-        label: 'label 2',
-        value: 'beijing'
-      }]
-    }
-  ],
-  formButtons: [{
-    text: '取消',
-    type: 'text',
-    handler: function() {
-      console.log('btn cancel clicked');
-      _this.hideDialog();
-    }
-  }, {
-    text: '确定',
-    type: 'primary',
-    handler: function() {
-      console.log('btn confirm clicked');
-      console.log(defaultText);
-      console.log('url:' + dialog.formElements[0].value);
-      console.log('url text:' + dialog.formElements[1].value);
-      let url = dialog.formElements[0].value;
-      let urlText = dialog.formElements[1].value;
-      let link = '[' + urlText + '](' + url + ')';
-      cm.replaceSelection(link)
-      _this.hideDialog();
-
-    }
-  }]
-}
-
-
-
-
-*/

@@ -212,8 +212,61 @@ export default {
           _this.rendering = true;
         }
       })
-
-
+      // 添加快捷键
+      this.cm.setOption('extraKeys', {
+        'Enter': "newlineAndIndentContinueMarkdownList",
+        'Ctrl-B': () => {
+          this.execuateCallback('bold');
+        },
+        'Ctrl-I': () => {
+          this.execuateCallback('italic');
+        },
+        'Ctrl-Q': () => {
+          this.execuateCallback('quote');
+        },
+        'Ctrl-1': () => {
+          this.execuateCallback('h1');
+        },
+        'Ctrl-2': () => {
+          this.execuateCallback('h2');
+        },
+        'Ctrl-3': () => {
+          this.execuateCallback('h3');
+        },
+        'Ctrl-4': () => {
+          this.execuateCallback('h4');
+        },
+        'Ctrl-5': () => {
+          this.execuateCallback('h5');
+        },
+        'Ctrl-6': () => {
+          this.execuateCallback('h6');
+        },
+        'Ctrl-L': () => {
+          this.execuateCallback('link');
+        },
+        'Shift-Ctrl-L': () => {
+          this.execuateCallback('linkWithoutDialog');
+        },
+        'Ctrl-T': () => {
+          this.execuateCallback('t');
+        },
+        'Ctrl-P': () => {
+          this.execuateCallback('image');
+        },
+        'Ctrl-K': () => {
+          this.execuateCallback('inlineCode');
+        },
+        'Shift-Ctrl-K': () => {
+          this.execuateCallback('blockCode');
+        },
+        'Ctrl-Enter':()=>{
+          this.execuateCallback('addNewLineAppend');
+        },
+        'Shift-Ctrl-Enter':()=>{
+          this.execuateCallback('addNewLinePrepend');
+        }
+      })
 
       this.cm.setValue(fakeData)
 
