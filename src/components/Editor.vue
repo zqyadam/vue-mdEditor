@@ -1,7 +1,7 @@
 <template>
   <div class="main" v-loading="loading">
     <!-- toolbar  :element-loading-text="loadingText"-->
-    <el-button-group class="dark" id="toolbar">
+    <!-- <el-button-group class="dark" id="toolbar">
       <el-tooltip effect="light" content="新建文档">
         <el-button icon="z-file-o" size="small" class="dark" :plain="true" @click="newFile"></el-button>
       </el-tooltip>
@@ -11,8 +11,8 @@
       <el-tooltip effect="light" content="保存到本地">
         <el-button icon="z-save1" size="small" class="dark" :plain="true" @click="saveLocalFile"></el-button>
       </el-tooltip>
-      <span class="split"></span>
-      <!-- <el-tooltip v-for="tool in toolbarIcons" effect="light" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
+      <span class="split"></span> -->
+    <!-- <el-tooltip v-for="tool in toolbarIcons" effect="light" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
         <el-button :plain="true" :icon="toolbarIconsClass[tool]" size="small" @click="execuateCallback(tool)" class="dark"></el-button>
       </el-tooltip>
       <span class="split"></span>
@@ -28,7 +28,7 @@
       <el-tooltip effect="light" content="左右交换">
         <el-button icon="z-exchange" size="small" class="dark" :plain="true" @click="changeLayoutDirection"></el-button>
       </el-tooltip> -->
-    </el-button-group>
+    <!-- </el-button-group> -->
     <!-- main -->
     <div class="half b" :class="layoutDirection?'direction':'reverse'">
       <section :style="{width:editWidth+'%'}" v-show="editShow">
@@ -73,6 +73,7 @@ import {
 } from '../api/api.js'
 
 
+
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/addon/selection/active-line.js'
 import 'codemirror/addon/edit/closebrackets.js'
@@ -82,15 +83,36 @@ import 'codemirror/mode/markdown/markdown.js'
 import 'codemirror/lib/codemirror.css'
 import '../css/myCodeMirror.css'
 
+import marked from '../utils/markdownSettings.js'
+
+// console.log(marked.tocToTree())
+
+
+
 // import marked from 'marked'
 import 'github-markdown-css/github-markdown.css';
+
+
+import fakeData from '../fake/data.js'
+
+
+// hightlilght
+import Prism from 'prismjs/prism.js'
+import 'prismjs/plugins/line-numbers/prism-line-numbers.min.js'
+import 'prismjs/plugins/highlight-keywords/prism-highlight-keywords.min.js'
+import 'prismjs/plugins/toolbar/prism-toolbar.min.js'
+import 'prismjs/plugins/show-language/prism-show-language.min.js'
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'
+
+import 'prismjs/themes/prism-okaidia.css'
+import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
+import 'prismjs/plugins/toolbar/prism-toolbar.css'
 
 export default {
   data() {
       return {
         layoutDirection: true,
-        // MdContent:'',
-        HTMLContent: '',
+        MdContent: '',
         cm: null,
         editWidth: 50,
         readWidth: 50,
@@ -99,7 +121,68 @@ export default {
         loading: false
       }
     },
+    methods: {
+      // tocToTree: function(toc) {
+      //   let headlines = [];
+      //   let last = {};
+
+      //   for (let headline of Array.from(toc)) {
+      //     let level = headline.level || (headline.level = 1);
+      //     if (last[level - 1]) {
+      //       var name;
+      //       if (!last[name = level - 1].children) {
+      //         last[name].children = [];
+      //       }
+      //       last[level - 1].children.push(headline);
+      //     } else {
+      //       headlines.push(headline);
+      //     }
+      //     last[level] = headline;
+      //   }
+
+      //   return headlines;
+      // },
+      tocTreeToHtml: function(tree) {
+        let startLabel = "<ul>";
+        let endLabel = "</ul>";
+        let html = "";
+        for (let item of tree) {
+          if (item.children) {
+            html += '<li><a href="#' + item.id + '">' + item.text + '<a>' + this.tocTreeToHtml(item.children) + '</li>\n';
+          } else {
+            html += '<li><a href="#' + item.id + '">' + item.text + '<a></li>\n'
+          }
+        }
+        return startLabel + html + endLabel;
+      }
+    },
+    computed: {
+      HTMLContent: function() {
+        let time1 = Date.now();
+        marked.toc = [];
+        let Content = marked(this.MdContent);
+        console.log(marked.tocToTree()); 
+        let tocHTML = this.tocTreeToHtml(marked.tocToTree())
+        this.toc = [];
+        let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, tocHTML)
+        let time2 = Date.now();
+        console.log('render time:' + (time2 - time1) + 'ms');
+        return html;
+      }
+    },
+    watch: {
+      HTMLContent: function() {
+        let _this = this;
+        this.$nextTick(function() {
+          // DOM 更新了
+          Prism.highlightAll()
+          // _this.addATagLinkEvents();
+        })
+      }
+    },
     mounted: function() {
+      let _this = this;
+
       this.cm = CodeMirror.fromTextArea(document.getElementById('editor'), {
         mode: 'markdown',
         lineNumbers: true,
@@ -108,11 +191,27 @@ export default {
         tabSize: 2,
         autofocus: true,
         theme: "default",
-        showCursorWhenSelecting: true,
+        showCursorWhenSelecting: false,
         matchBrackets: true,
         styleActiveLine: true,
         autoCloseBrackets: true,
       });
+
+
+      this.cm.on('change', (cm, changeObj) => {
+
+        if (!_this.rendering) {
+          setTimeout(function() {
+            _this.MdContent = cm.getValue();
+            _this.rendering = false
+          }, 300)
+          _this.rendering = true;
+        }
+      })
+
+
+      this.cm.setValue(fakeData)
+
     }
 }
 </script>
@@ -183,19 +282,6 @@ export default {
 
 
 /*previewer css */
-
-
-/*.paper {
-  transition: all .45s cubic-bezier(0.23, 1, 0.32, 1);
-  color: rgba(0, 0, 0, 0.87);
-  background-color: #fcfcfc;
-  box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;
-  border-radius: 2px;
-  height: 100%;
-  padding: 20px;
-  margin: 0 5px;
-  word-break: break-all;
-}*/
 
 .previewer-container {
   height: 100%;

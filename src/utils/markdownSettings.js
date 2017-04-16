@@ -4,6 +4,27 @@ import marked from 'marked'
 let renderer = new marked.Renderer();
 
 marked.toc = [];
+marked.tocToTree = function() {
+  let toc = this.toc;
+  let headlines = [];
+  let last = {};
+
+  for (let headline of Array.from(toc)) {
+    let level = headline.level || (headline.level = 1);
+    if (last[level - 1]) {
+      var name;
+      if (!last[name = level - 1].children) {
+        last[name].children = [];
+      }
+      last[level - 1].children.push(headline);
+    } else {
+      headlines.push(headline);
+    }
+    last[level] = headline;
+  }
+
+  return headlines;
+}
 
 renderer.listitem = function(text) {
   if (/^\s*\[[x ]\]\s*/.test(text)) {
@@ -15,6 +36,7 @@ renderer.listitem = function(text) {
   }
 };
 renderer.heading = function(text, level) {
+  console.log(this.options.toc);
   var isChinese = /[\u4e00-\u9fa5]+$/.test(text);
   var id = (isChinese) ? escape(text).replace(/\%/g, "") : text.toLowerCase().replace(/[^\w]+/g, "-");
 
@@ -35,8 +57,7 @@ renderer.paragraph = function(text) {
 }
 
 renderer.link = function(href, title, text) {
-
-  return '<a class="link" href="' + href + '"' + (title ? 'title="' + title + '"' : '') + '>' + text + '</a>'
+  return '<a target="_blank" href="' + href + '"' + (title ? 'title="' + title + '"' : '') + '>' + text + '</a>'
 }
 
 renderer.code = function(code, lang, escaped) {
@@ -45,7 +66,7 @@ renderer.code = function(code, lang, escaped) {
   let lineNumbers = this.options.lineNumbers;
   if (this.options.highlight) {
     let out = this.options.highlight(code, lang);
-    
+
     if (out != null && out !== code) {
       escaped = true;
       code = out;
@@ -55,7 +76,7 @@ renderer.code = function(code, lang, escaped) {
     return '<pre' + (lineNumbers ? ' class="line-numbers"' : '') + '><code>' + (escaped ? code : escape(code, true)) + '\n</code></pre>';
   }
 
-  return '<pre class="' + this.options.langPrefix + escape(lang, true) + (lineNumbers?' line-numbers':'')+'"><code class="' + this.options.langPrefix + escape(lang, true) + '">' + (escaped ? code : escape(code, true)) + '\n</code></pre>\n';
+  return '<pre class="' + this.options.langPrefix + escape(lang, true) + (lineNumbers ? ' line-numbers' : '') + '"><code class="' + this.options.langPrefix + escape(lang, true) + '">' + (escaped ? code : escape(code, true)) + '\n</code></pre>\n';
 }
 
 
