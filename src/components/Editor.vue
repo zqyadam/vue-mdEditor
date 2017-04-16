@@ -242,6 +242,15 @@ export default {
         'Ctrl-6': () => {
           this.execuateCallback('h6');
         },
+        'Shift-Ctrl-U':()=>{
+          this.execuateCallback('ul');
+        },
+        'Shift-Ctrl-O':()=>{
+          this.execuateCallback('ol');
+        },
+        'Ctrl-H': () => {
+          this.execuateCallback('hr');
+        },
         'Ctrl-L': () => {
           this.execuateCallback('link');
         },

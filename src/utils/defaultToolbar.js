@@ -1,11 +1,11 @@
 import { requestImageUploadFromLocal } from '../api/api.js'
 
-export const toolbar = ['newFile','openFile','saveFile','split','undo', 'redo', 'bold', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image', 'inlineCode', 'blockCode','split','previewMode','editMode','readMode','exchange'];
+export const toolbar = ['newFile', 'openFile', 'saveFile', 'split', 'undo', 'redo', 'bold', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image', 'inlineCode', 'blockCode', 'split', 'previewMode', 'editMode', 'readMode', 'exchange'];
 
 export const toolbarIconsClass = {
-  'newFile':'z-file-o',
-  'openFile':'z-folder-open-o',
-  'saveFile':'z-save1',
+  'newFile': 'z-file-o',
+  'openFile': 'z-folder-open-o',
+  'saveFile': 'z-save1',
   'undo': 'z-undo',
   'redo': 'z-redo',
   'bold': 'z-bold',
@@ -24,10 +24,10 @@ export const toolbarIconsClass = {
   'image': 'z-tupian',
   'inlineCode': 'z-ai-code',
   'blockCode': 'z-daimakuai',
-  'previewMode':'z-shuanglan',
-  'editMode':'z-bianji',
-  'readMode':'z-computer',
-  'exchange':'z-exchange',
+  'previewMode': 'z-shuanglan',
+  'editMode': 'z-bianji',
+  'readMode': 'z-computer',
+  'exchange': 'z-exchange',
 
 }
 
@@ -43,13 +43,17 @@ export const toolbarIconTips = {
   'h4': '标题4(Ctrl+4)',
   'h5': '标题5(Ctrl+5)',
   'h6': '标题6(Ctrl+6)',
-  'ul': '无序列表',
-  'ol': '有序列表',
-  'hr': '横线',
+  'ul': '无序列表(Ctrl+Shift+U)',
+  'ol': '有序列表(Ctrl+Shift+O)',
+  'hr': '横线(Ctrl+H)',
   'link': '链接(Ctrl+L或Ctrl+Shift+L)',
   'image': '图像(Ctrl+Shift+P)',
   'inlineCode': '行内代码(Ctrl+K)',
-  'blockCode': '代码块(Ctrl+Shift+K)'
+  'blockCode': '代码块(Ctrl+Shift+K)',
+  'previewMode':'实时预览',
+  'editMode':'编辑模式',
+  'readMode':'阅读模式',
+  'exchange':'左右交换'
 }
 export const toolbarHandlers = {
   undo: function(cm) {
@@ -215,6 +219,25 @@ export const toolbarHandlers = {
       }
     }
   },
+  previewMode: function(cm, _this) {
+    _this.readShow = true;
+    _this.readWidth = 50;
+    _this.editShow = true;
+    _this.editWidth = 50;
+  },
+  editMode: function(cm, _this) {
+    _this.editShow = true;
+    _this.readShow = false;
+    _this.editWidth = 100;
+  },
+  readMode: function(cm, _this) {
+    _this.readShow = true;
+    _this.editShow = false;
+    _this.readWidth = 100;
+  },
+  exchange:function(cm,_this) {
+_this.layoutDirection = !_this.layoutDirection;
+  },
   // 不显示在工具栏的命令，仅支持快捷键
   t: function(cm) { // Ctrl+T
     let pos = cm.getCursor('from');
@@ -238,17 +261,19 @@ export const toolbarHandlers = {
       ch: pos.ch - 1
     })
   },
+
   // 向后添加行
-  addNewLineAppend:function(cm){  // Ctrl+Enter
+  addNewLineAppend: function(cm) { // Ctrl+Enter
     let pos = cm.getCursor();
     cm.setCursor({ line: pos.line + 1, ch: 0 });
-    cm.replaceSelection('\n','start')
+    cm.replaceSelection('\n', 'start');
+    cm.setCursor({ line: pos.line + 1, ch: 0 });
   },
   // 向前添加行
-  addNewLinePrepend:function(cm){ // Ctrl+Shift+Enter
+  addNewLinePrepend: function(cm) { // Ctrl+Shift+Enter
     let pos = cm.getCursor();
     cm.setCursor({ line: pos.line, ch: 0 });
-    cm.replaceSelection('\n','start')
+    cm.replaceSelection('\n', 'start');
   }
 }
 
@@ -292,4 +317,3 @@ let Common = (function() {
     insertLabel: insertLabel
   }
 })()
-
