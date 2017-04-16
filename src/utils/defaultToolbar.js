@@ -45,9 +45,9 @@ export const toolbarIconTips = {
   'h6': '标题6(Ctrl+6)',
   'ul': '无序列表',
   'ol': '有序列表',
-  'hr': '横线(Ctrl+6)',
+  'hr': '横线',
   'link': '链接(Ctrl+L或Ctrl+Shift+L)',
-  'image': '图像(Ctrl+P)',
+  'image': '图像(Ctrl+Shift+P)',
   'inlineCode': '行内代码(Ctrl+K)',
   'blockCode': '代码块(Ctrl+Shift+K)'
 }

@@ -36,7 +36,7 @@ renderer.listitem = function(text) {
   }
 };
 renderer.heading = function(text, level) {
-  console.log(this.options.toc);
+
   var isChinese = /[\u4e00-\u9fa5]+$/.test(text);
   var id = (isChinese) ? escape(text).replace(/\%/g, "") : text.toLowerCase().replace(/[^\w]+/g, "-");
 
@@ -61,8 +61,6 @@ renderer.link = function(href, title, text) {
 }
 
 renderer.code = function(code, lang, escaped) {
-  // console.log(code);
-  // return
   let lineNumbers = this.options.lineNumbers;
   if (this.options.highlight) {
     let out = this.options.highlight(code, lang);
