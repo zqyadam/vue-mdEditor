@@ -1,8 +1,8 @@
 <template>
   <div class="main" v-loading="loading">
     <!-- toolbar  :element-loading-text="loadingText"-->
-    <!-- <el-button-group class="dark" id="toolbar">
-      <el-tooltip effect="light" content="新建文档">
+    <el-button-group class="dark" id="toolbar">
+      <!--  <el-tooltip effect="light" content="新建文档">
         <el-button icon="z-file-o" size="small" class="dark" :plain="true" @click="newFile"></el-button>
       </el-tooltip>
       <el-tooltip effect="light" content="打开本地文件">
@@ -12,11 +12,13 @@
         <el-button icon="z-save1" size="small" class="dark" :plain="true" @click="saveLocalFile"></el-button>
       </el-tooltip>
       <span class="split"></span> -->
-    <!-- <el-tooltip v-for="tool in toolbarIcons" effect="light" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
+      <template v-for="tool in toolbar">
+      <el-tooltip v-if="tool != 'split'"  effect="dark" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
         <el-button :plain="true" :icon="toolbarIconsClass[tool]" size="small" @click="execuateCallback(tool)" class="dark"></el-button>
       </el-tooltip>
-      <span class="split"></span>
-      <el-tooltip effect="light" content="实时预览">
+      <span class="split" v-else></span>
+      </template>
+      <!--  <el-tooltip effect="light" content="实时预览">
         <el-button icon="z-shuanglan" size="small" class="dark" :plain="true" @click="previewMode"></el-button>
       </el-tooltip>
       <el-tooltip effect="light" content="编辑模式">
@@ -28,7 +30,7 @@
       <el-tooltip effect="light" content="左右交换">
         <el-button icon="z-exchange" size="small" class="dark" :plain="true" @click="changeLayoutDirection"></el-button>
       </el-tooltip> -->
-    <!-- </el-button-group> -->
+    </el-button-group>
     <!-- main -->
     <div class="half b" :class="layoutDirection?'direction':'reverse'">
       <section :style="{width:editWidth+'%'}" v-show="editShow">
@@ -72,7 +74,12 @@ import {
   requestImageUploadFromLocal
 } from '../api/api.js'
 
-
+import {
+  toolbar,
+  toolbarIconsClass,
+  toolbarIconTips,
+  toolbarHandlers
+} from '../utils/defaultToolbar.js'
 
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/addon/selection/active-line.js'
@@ -85,7 +92,6 @@ import '../css/myCodeMirror.css'
 
 import marked from '../utils/markdownSettings.js'
 
-// console.log(marked.tocToTree())
 
 
 
@@ -118,30 +124,14 @@ export default {
         readWidth: 50,
         editShow: true,
         readShow: true,
-        loading: false
+        loading: false,
+        toolbar: toolbar,
+        toolbarIconsClass: toolbarIconsClass,
+        toolbarIconTips: toolbarIconTips,
+        toolbarHandlers: toolbarHandlers,
       }
     },
     methods: {
-      // tocToTree: function(toc) {
-      //   let headlines = [];
-      //   let last = {};
-
-      //   for (let headline of Array.from(toc)) {
-      //     let level = headline.level || (headline.level = 1);
-      //     if (last[level - 1]) {
-      //       var name;
-      //       if (!last[name = level - 1].children) {
-      //         last[name].children = [];
-      //       }
-      //       last[level - 1].children.push(headline);
-      //     } else {
-      //       headlines.push(headline);
-      //     }
-      //     last[level] = headline;
-      //   }
-
-      //   return headlines;
-      // },
       tocTreeToHtml: function(tree) {
         let startLabel = "<ul>";
         let endLabel = "</ul>";
@@ -158,15 +148,9 @@ export default {
     },
     computed: {
       HTMLContent: function() {
-        let time1 = Date.now();
-        marked.toc = [];
         let Content = marked(this.MdContent);
-        console.log(marked.tocToTree()); 
-        let tocHTML = this.tocTreeToHtml(marked.tocToTree())
-        this.toc = [];
-        let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, tocHTML)
-        let time2 = Date.now();
-        console.log('render time:' + (time2 - time1) + 'ms');
+        let tocTree = marked.tocToTree();
+        let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, this.tocTreeToHtml(tocTree))
         return html;
       }
     },
@@ -176,7 +160,6 @@ export default {
         this.$nextTick(function() {
           // DOM 更新了
           Prism.highlightAll()
-          // _this.addATagLinkEvents();
         })
       }
     },
@@ -191,7 +174,7 @@ export default {
         tabSize: 2,
         autofocus: true,
         theme: "default",
-        showCursorWhenSelecting: false,
+        showCursorWhenSelecting: true,
         matchBrackets: true,
         styleActiveLine: true,
         autoCloseBrackets: true,
@@ -208,6 +191,7 @@ export default {
           _this.rendering = true;
         }
       })
+
 
 
       this.cm.setValue(fakeData)
@@ -256,7 +240,7 @@ export default {
 #toolbar {
   display: flex;
   flex-direction: row;
-  line-height: 1;
+  /*line-height: 1;*/
 }
 
 .dark {
