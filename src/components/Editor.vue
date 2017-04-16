@@ -2,34 +2,12 @@
   <div class="main" v-loading="loading">
     <!-- toolbar  :element-loading-text="loadingText"-->
     <el-button-group class="dark" id="toolbar">
-      <!--  <el-tooltip effect="light" content="新建文档">
-        <el-button icon="z-file-o" size="small" class="dark" :plain="true" @click="newFile"></el-button>
-      </el-tooltip>
-      <el-tooltip effect="light" content="打开本地文件">
-        <el-button icon="z-folder-open-o" size="small" class="dark" :plain="true" @click="openLocalFile"></el-button>
-      </el-tooltip>
-      <el-tooltip effect="light" content="保存到本地">
-        <el-button icon="z-save1" size="small" class="dark" :plain="true" @click="saveLocalFile"></el-button>
-      </el-tooltip>
-      <span class="split"></span> -->
       <template v-for="tool in toolbar">
-      <el-tooltip v-if="tool != 'split'"  effect="dark" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
-        <el-button :plain="true" :icon="toolbarIconsClass[tool]" size="small" @click="execuateCallback(tool)" class="dark"></el-button>
-      </el-tooltip>
-      <span class="split" v-else></span>
+        <el-tooltip v-if="tool != 'split'" effect="dark" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
+          <el-button :plain="true" :icon="toolbarIconsClass[tool]" size="small" @click="execuateCallback(tool)" class="dark"></el-button>
+        </el-tooltip>
+        <span class="split" v-else></span>
       </template>
-      <!--  <el-tooltip effect="light" content="实时预览">
-        <el-button icon="z-shuanglan" size="small" class="dark" :plain="true" @click="previewMode"></el-button>
-      </el-tooltip>
-      <el-tooltip effect="light" content="编辑模式">
-        <el-button icon="z-bianji" size="small" class="dark" :plain="true" @click="editMode"></el-button>
-      </el-tooltip>
-      <el-tooltip effect="light" content="阅读模式">
-        <el-button icon="z-computer" size="small" class="dark" :plain="true" @click="readMode"></el-button>
-      </el-tooltip>
-      <el-tooltip effect="light" content="左右交换">
-        <el-button icon="z-exchange" size="small" class="dark" :plain="true" @click="changeLayoutDirection"></el-button>
-      </el-tooltip> -->
     </el-button-group>
     <!-- main -->
     <div class="half b" :class="layoutDirection?'direction':'reverse'">
@@ -125,6 +103,9 @@ export default {
         editShow: true,
         readShow: true,
         loading: false,
+        enableSyncScroll: true,
+        editorScrolling: false,
+        previewerScrolling: false,
         toolbar: toolbar,
         toolbarIconsClass: toolbarIconsClass,
         toolbarIconTips: toolbarIconTips,
@@ -144,7 +125,41 @@ export default {
           }
         }
         return startLabel + html + endLabel;
-      }
+      },
+      execuateCallback: function(name) {
+        if (this.toolbarHandlers[name]) {
+          this.toolbarHandlers[name](this.cm, this)
+        }
+      },
+      editorScroll: function(cm, e) {
+        let _this = this;
+        if (this.enableSyncScroll) {
+          if (this.editorScrolling) {
+            this.editorScrolling = false;
+            return
+          }
+          this.previewerScrolling = true;
+          let scrollObj = _this.cm.getScrollInfo();
+          let percent = scrollObj.top / scrollObj.height;
+          let previewer = document.getElementById('previewer');
+          previewer.scrollTop = percent * previewer.scrollHeight;
+        }
+      },
+      previewerScroll: function(e) {
+        let _this = this;
+        if (this.enableSyncScroll) {
+          if (this.previewerScrolling) {
+            this.previewerScrolling = false;
+            return;
+          }
+          this.editorScrolling = true;
+          let previewer1 = e.target;
+          let percent = previewer1.scrollTop / previewer1.scrollHeight;
+          let scrollObj = _this.cm.getScrollInfo();
+          let editorTop = percent * scrollObj.height;
+          _this.cm.scrollTo(null, editorTop)
+        }
+      },
     },
     computed: {
       HTMLContent: function() {
@@ -180,7 +195,13 @@ export default {
         autoCloseBrackets: true,
       });
 
+      //  滚动监听
+      //  编辑区滚动
+      this.cm.on('scroll', this.editorScroll)
+        // 预览区滚动
+      document.getElementById('previewer').addEventListener('scroll', _this.previewerScroll)
 
+      // 内容变化监听
       this.cm.on('change', (cm, changeObj) => {
 
         if (!_this.rendering) {
