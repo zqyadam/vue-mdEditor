@@ -1,6 +1,6 @@
 <template>
-  <div class="main" v-loading="loading">
-    <!-- toolbar  :element-loading-text="loadingText"-->
+  <div class="main" v-loading.fullscreen.lock="uploadingImage" :element-loading-text="uploadingImageText">
+    <!-- toolbar  -->
     <el-button-group class="dark" id="toolbar">
       <template v-for="tool in toolbar">
         <el-tooltip v-if="tool != 'split'" effect="dark" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
@@ -10,7 +10,7 @@
       </template>
     </el-button-group>
     <!-- main -->
-    <div class="half b" :class="layoutDirection?'direction':'reverse'">
+    <div class="half" :class="layoutDirection?'direction':'reverse'">
       <section :style="{width:editWidth+'%'}" v-show="editShow">
         <div class="fit">
           <textarea id="editor"></textarea>
@@ -23,6 +23,9 @@
       </section>
     </div>
     <!-- a very complex dialog -_-!!  -->
+    <linkDialog v-if="currentDialog == 'linkDialog'" :options="dialogOptions"></linkDialog>
+    <imageDialog v-else-if="currentDialog == 'imageDialog'" :options="dialogOptions" @uploadingImageFile="uploadingImageFile"></imageDialog>
+    <!-- <component :options="dialogOptions" :is="currentDialog" :cm="cm" ></component> -->
     <!-- <el-dialog v-model="dialogInfo.show" :title="dialogInfo.title" :close-on-click-modal="false" :show-close="dialogInfo.showClose">
       <template v-for="(element,index) in dialogInfo.formElements">
         <template v-if="element.type === 'file'">
@@ -70,9 +73,6 @@ import '../css/myCodeMirror.css'
 
 import marked from '../utils/markdownSettings.js'
 
-
-
-
 // import marked from 'marked'
 import 'github-markdown-css/github-markdown.css';
 
@@ -92,25 +92,45 @@ import 'prismjs/themes/prism-solarizedlight.css'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
 import 'prismjs/plugins/toolbar/prism-toolbar.css'
 
+// dialog components
+import linkDialog from './Editor/linkDialog'
+import imageDialog from './Editor/imageDialog'
+
 export default {
   data() {
       return {
-        layoutDirection: true,
         MdContent: '',
         cm: null,
+        // layout options
+        layoutDirection: true,
         editWidth: 50,
         readWidth: 50,
         editShow: true,
         readShow: true,
-        loading: false,
+        // syncScroll options
         enableSyncScroll: true,
         editorScrolling: false,
         previewerScrolling: false,
+        // toolbar options
         toolbar: toolbar,
         toolbarIconsClass: toolbarIconsClass,
         toolbarIconTips: toolbarIconTips,
         toolbarHandlers: toolbarHandlers,
+        // dialog options
+        currentDialog: 'imageDialog',
+        dialogOptions: {
+          show: false,
+          cm: null
+        },
+        // upload image
+        uploadingImage: false,
+        uploadingImageText: ''
       }
+    },
+    components: {
+      'linkDialog': linkDialog,
+      'imageDialog': imageDialog
+
     },
     methods: {
       tocTreeToHtml: function(tree) {
@@ -160,6 +180,51 @@ export default {
           _this.cm.scrollTo(null, editorTop)
         }
       },
+      uploadingImageFile: function(filePromise) {
+        let _this = this;
+        _this.uploadingImage = true;
+        _this.uploadingImageText = '准备开始上传...';
+        filePromise.save({
+          onprogress: function(e) {
+            if (parseInt(e.percent) === 100) {
+              _this.uploadingImageText = '即将上传完成... \\(^o^)/';
+            } else {
+              _this.uploadingImageText = '拼命上传中，已上传' + parseInt(e.percent) + '%';
+            }
+          }
+        }).then(function(file) {
+
+          let url = file.url();
+
+          if (_this.cm.somethingSelected()) {
+            let selection = _this.cm.getSelection();
+            let mdImage = '![' + selection + '](' + url + ')';
+            _this.cm.replaceSelection(mdImage);
+          } else {
+            let mdImage = '![](' + url + ')';
+            let pos = _this.cm.getCursor('from');
+            _this.cm.replaceRange(mdImage, pos);
+            _this.cm.setCursor({
+              line: pos.line,
+              ch: pos.ch + 2
+            });
+            _this.cm.replaceSelection('图片描述', 'around');
+          }
+          _this.uploadingImage = false;
+          _this.$message({
+            message: '图片上传成功！',
+            type: 'success'
+          })
+
+        }, function(err) {
+          _this.uploadingImage = false;
+          console.log(err);
+          _this.$message({
+            message: '图片上传失败！',
+            type: 'error'
+          })
+        })
+      }
     },
     computed: {
       HTMLContent: function() {
@@ -194,7 +259,6 @@ export default {
         styleActiveLine: true,
         autoCloseBrackets: true,
       });
-
       //  滚动监听
       //  编辑区滚动
       this.cm.on('scroll', this.editorScroll)
@@ -204,15 +268,15 @@ export default {
       // 内容变化监听
       this.cm.on('change', (cm, changeObj) => {
 
-        if (!_this.rendering) {
-          setTimeout(function() {
-            _this.MdContent = cm.getValue();
-            _this.rendering = false
-          }, 300)
-          _this.rendering = true;
-        }
-      })
-      // 添加快捷键
+          if (!_this.rendering) {
+            setTimeout(function() {
+              _this.MdContent = cm.getValue();
+              _this.rendering = false
+            }, 300)
+            _this.rendering = true;
+          }
+        })
+        // 添加快捷键
       this.cm.setOption('extraKeys', {
         'Enter': "newlineAndIndentContinueMarkdownList",
         'Ctrl-B': () => {
@@ -242,10 +306,10 @@ export default {
         'Ctrl-6': () => {
           this.execuateCallback('h6');
         },
-        'Shift-Ctrl-U':()=>{
+        'Shift-Ctrl-U': () => {
           this.execuateCallback('ul');
         },
-        'Shift-Ctrl-O':()=>{
+        'Shift-Ctrl-O': () => {
           this.execuateCallback('ol');
         },
         'Ctrl-H': () => {
@@ -269,10 +333,10 @@ export default {
         'Shift-Ctrl-K': () => {
           this.execuateCallback('blockCode');
         },
-        'Ctrl-Enter':()=>{
+        'Ctrl-Enter': () => {
           this.execuateCallback('addNewLineAppend');
         },
-        'Shift-Ctrl-Enter':()=>{
+        'Shift-Ctrl-Enter': () => {
           this.execuateCallback('addNewLinePrepend');
         }
       })
@@ -371,39 +435,4 @@ export default {
 }
 </style>
 <style>
-html {
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #20a0ff;
-}
-
-.avatar-uploader {
-  text-align: center;
-  margin-bottom: 5px;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
 </style>
