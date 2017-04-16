@@ -22,7 +22,7 @@ marked.tocToTree = function() {
     }
     last[level] = headline;
   }
-
+  this.toc = [];
   return headlines;
 }
 
