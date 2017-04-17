@@ -294,30 +294,25 @@ export default {
       // 图片粘贴上传功能
       this.cm.on('paste', function(cm, event) {
         let clipboardData = event.clipboardData;
-        
+
         if (clipboardData && clipboardData.items) {
-          let item = null;
-          let types = clipboardData.types || [];
+          for (let item of clipboardData.items) {
+            // 判断图片格式
+            if (item && item.kind == 'file' && item.type.match(/^image\//i)) {
 
-          for (let i = 0; i < types.length; i++) {
-            if (types[i] === 'Files') {
-              item = clipboardData.items[i];
+              let imgFile = item.getAsFile();
+              let fileType = item.type.replace(/^image\/(.*)/i, '$1')
+              let guid = new Date().getTime();
+              let fileName = 'ScreenShot' + guid + '.' + fileType;
+
+              let reader = new FileReader();
+              reader.readAsDataURL(imgFile);
+              reader.onload = function(e) {
+                let filePromise = requestImageUploadFromStream(fileName, this.result);
+                _this.uploadingImageFile(filePromise);
+              }
+
               break;
-            }
-          }
-
-          if (item && item.kind == 'file' && item.type.match(/^image\//i)) {
-
-            let imgFile = item.getAsFile(); 
-            let fileType = item.type.replace(/^image\/(.*)/i, '$1')
-            let guid = new Date().getTime();
-
-            let fileName = 'ScreenShot' + guid + '.' + fileType;
-            let reader = new FileReader();
-            reader.readAsDataURL(imgFile);
-            reader.onload = function(e) {
-              let filePromise = requestImageUploadFromStream(fileName, this.result);
-              _this.uploadingImageFile(filePromise);
             }
           }
 
