@@ -87,6 +87,7 @@ export default {
       return {
         MdContent: '',
         cm: null,
+        currentFileInfo: {},
         // layout options
         layoutDirection: true,
         editWidth: 50,
@@ -134,6 +135,17 @@ export default {
       execuateCallback: function(name) {
         if (this.toolbarHandlers[name]) {
           this.toolbarHandlers[name](this.cm, this)
+        }
+      },
+      openLocalFile: function(file) {
+        let _this = this;
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = function(e) {
+          _this.cm.clearHistory();
+          _this.cm.setValue(this.result)
+          _this.cm.markClean()
+          _this.currentFileInfo.filepath = file.path;
         }
       },
       editorScroll: function(cm, e) {
@@ -275,10 +287,31 @@ export default {
 
         /* read text file */
         if (/\.(md|txt)$/i.test(file.name)) {
-          // console.log('reading  file');
-          // let fileContent = fs.readFileSync(file.path, 'utf8');
-          // _this.currentFileInfo.filepath = file.path;
-          // _this.cm.setValue(fileContent);
+          // 询问是否保存当前文件
+          if (_this.cm.getValue() !== '') {
+            _this.$confirm('是否保存当前文件？', '保存文件', {
+              confirmButtonText: '保存',
+              cancelButtonText: '不保存',
+              type: 'warning',
+              showClose: false
+            }).then(function() {
+              // todo something
+
+              _this.$message({
+                message: '执行保存文件内容，待后续完善',
+                type: 'warning'
+              })
+            }).catch(function() {
+              _this.$message({
+                message: '文件未保存！',
+                type: 'warning'
+              })
+            }).finally(function() {
+              _this.openLocalFile(file)
+            })
+          } else {
+            _this.openLocalFile(file)
+          }
 
         } else if (/^image\//i.test(file.type)) {
           // read and upload image
