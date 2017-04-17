@@ -1,14 +1,21 @@
 <template>
   <div class="main" v-loading.fullscreen.lock="uploadingImage" :element-loading-text="uploadingImageText">
     <!-- toolbar  -->
-    <el-button-group class="dark" id="toolbar">
-      <template v-for="tool in toolbar">
-        <el-tooltip v-if="tool != 'split'" effect="dark" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
-          <el-button :plain="true" :icon="toolbarIconsClass[tool]" size="small" @click="execuateCallback(tool)" class="dark"></el-button>
+    <div id="toolbar" class="dark">
+      <el-button-group class="toolbar-left">
+        <template v-for="tool in toolbar">
+          <el-tooltip v-if="tool != 'split'" effect="dark" :content="toolbarIconTips[tool]?toolbarIconTips[tool]:tool" placement="bottom">
+            <el-button :plain="true" :icon="toolbarIconsClass[tool]" size="small" @click="execuateCallback(tool)" class="dark"></el-button>
+          </el-tooltip>
+          <span class="split" v-else></span>
+        </template>
+      </el-button-group>
+      <el-button-group class="toolbar-right">
+        <el-tooltip effect="dark" content="1111" placement="bottom">
+          <el-button icon="z-logout" size="small" class="dark">登出</el-button>
         </el-tooltip>
-        <span class="split" v-else></span>
-      </template>
-    </el-button-group>
+      </el-button-group>
+    </div>
     <!-- main -->
     <div class="half" :class="layoutDirection?'direction':'reverse'">
       <section :style="{width:editWidth+'%'}" v-show="editShow">
@@ -25,27 +32,6 @@
     <!-- a very complex dialog -_-!!  -->
     <linkDialog v-if="currentDialog == 'linkDialog'" :options="dialogOptions"></linkDialog>
     <imageDialog v-else-if="currentDialog == 'imageDialog'" :options="dialogOptions" @uploadingImageFile="uploadingImageFile"></imageDialog>
-    <!-- <component :options="dialogOptions" :is="currentDialog" :cm="cm" ></component> -->
-    <!-- <el-dialog v-model="dialogInfo.show" :title="dialogInfo.title" :close-on-click-modal="false" :show-close="dialogInfo.showClose">
-      <template v-for="(element,index) in dialogInfo.formElements">
-        <template v-if="element.type === 'file'">
-          <el-upload class="avatar-uploader" :before-upload="element.handler" action="" :show-file-list="false" select :accept="element.accept">
-            <i class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </template>
-        <el-form v-else label-width="80px" label-position="right">
-          <el-form-item :label="element.label">
-            <el-input v-if="element.type === 'input'" v-model="element.value"></el-input>
-            <el-select v-if="element.type === 'select'" v-model="element.value">
-              <el-option v-for="option in element.options" :label="option.label" :value="option.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-      </template>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-for="button in dialogInfo.formButtons" :type="button.type" v-text="button.text" @click="button.handler"></el-button>
-      </div>
-    </el-dialog> -->
   </div>
 </template>
 <script>
@@ -130,7 +116,6 @@ export default {
     components: {
       'linkDialog': linkDialog,
       'imageDialog': imageDialog
-
     },
     methods: {
       tocTreeToHtml: function(tree) {
@@ -259,7 +244,7 @@ export default {
         styleActiveLine: true,
         autoCloseBrackets: true,
       });
-      //  滚动监听
+      //  同步滚动监听
       //  编辑区滚动
       this.cm.on('scroll', this.editorScroll)
         // 预览区滚动
@@ -267,16 +252,42 @@ export default {
 
       // 内容变化监听
       this.cm.on('change', (cm, changeObj) => {
+        if (!_this.rendering) {
+          setTimeout(function() {
+            _this.MdContent = cm.getValue();
+            _this.rendering = false
+          }, 300)
+          _this.rendering = true;
+        }
+      })
 
-          if (!_this.rendering) {
-            setTimeout(function() {
-              _this.MdContent = cm.getValue();
-              _this.rendering = false
-            }, 300)
-            _this.rendering = true;
-          }
-        })
-        // 添加快捷键
+      // 拖拽打开文件或上传图片
+      this.cm.on('drop', function(cm, e) {
+        e.preventDefault();
+
+        let file = e.dataTransfer.files[0];
+
+        /* read text file */
+        if (/\.(md|txt)$/i.test(file.name)) {
+          // console.log('reading  file');
+          // let fileContent = fs.readFileSync(file.path, 'utf8');
+          // _this.currentFileInfo.filepath = file.path;
+          // _this.cm.setValue(fileContent);
+
+        } else if (/^image\//i.test(file.type)) {
+          // read and upload image
+          _this.loading = true;
+          _this.loadingText = '准备开始上传...';
+          let filePromise = requestImageUploadFromLocal(file);
+
+          _this.uploadingImageFile(filePromise);
+          
+        }
+
+      })
+
+
+      // 添加快捷键
       this.cm.setOption('extraKeys', {
         'Enter': "newlineAndIndentContinueMarkdownList",
         'Ctrl-B': () => {
@@ -387,7 +398,19 @@ export default {
 #toolbar {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  height: 32px;
   /*line-height: 1;*/
+}
+
+.toolbar-left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.toolbar-right {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .dark {
