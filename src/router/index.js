@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../components/Login'
 import Editor from '../components/Editor'
-import {isLoggedIn} from '../api/api'
+import { isLoggedIn } from '../api/api'
 
 Vue.use(Router)
 
@@ -30,10 +30,13 @@ let router = new Router({
 router.beforeEach((to, form, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!isLoggedIn()) {
-      next({ name: 'login'})
+      next({ name: 'login' })
+    } else {
+      next();
     }
+  } else {
+    next();
   }
-  next();
 })
 
 

@@ -12,7 +12,7 @@
       </el-button-group>
       <el-button-group class="toolbar-right">
         <el-tooltip effect="dark" content="1111" placement="bottom">
-          <el-button icon="z-logout" size="small" class="dark">登出</el-button>
+          <el-button icon="z-logout" size="small" class="dark" @click="logout">登出</el-button>
         </el-tooltip>
       </el-button-group>
     </div>
@@ -38,7 +38,7 @@
 import {
   requestLogout,
   requestImageUploadFromStream,
-  requestImageUploadFromLocal
+  requestImageUploadFromLocal,
 } from '../api/api.js'
 
 import {
@@ -209,6 +209,12 @@ export default {
             type: 'error'
           })
         })
+      },
+      logout: function() {
+        requestLogout();
+        this.$router.push({
+          name: 'login'
+        })
       }
     },
     computed: {
@@ -281,7 +287,7 @@ export default {
           let filePromise = requestImageUploadFromLocal(file);
 
           _this.uploadingImageFile(filePromise);
-          
+
         }
 
       })
