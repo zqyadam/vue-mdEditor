@@ -11,8 +11,8 @@
         </template>
       </el-button-group>
       <el-button-group class="toolbar-right">
-        <el-tooltip effect="dark" content="1111" placement="bottom">
-          <el-button icon="z-logout" size="small" class="dark" @click="logout">登出</el-button>
+        <el-tooltip effect="dark" content="退出" placement="bottom">
+          <el-button icon="z-logout" size="small" class="dark" @click="logout">退出</el-button>
         </el-tooltip>
       </el-button-group>
     </div>
@@ -299,12 +299,14 @@ export default {
 
               _this.$message({
                 message: '执行保存文件内容，待后续完善',
-                type: 'warning'
+                type: 'warning',
+                showClose:true
               })
             }).catch(function() {
               _this.$message({
                 message: '文件未保存！',
-                type: 'warning'
+                type: 'warning',
+                showClose:true
               })
             }).finally(function() {
               _this.openLocalFile(file)
