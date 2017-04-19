@@ -47,6 +47,7 @@ export default {
         this.linkTitle = '';
         this.linkAddress = '';
         this.options.show = false;
+        this.options.cm.focus();
       },
       open: function() {
         if (this.options.cm.somethingSelected()) {

@@ -24,6 +24,7 @@ export default {
     methods: {
       close: function() {
         this.options.show = false;
+        this.options.cm.focus();
       },
       upload: function(file) {
         console.log(file);

@@ -2,6 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../components/Login'
 import Editor from '../components/Editor'
+import Dashboard from '../components/Dashboard'
+import Posts from '../components/Dashboard/Posts'
+import Images from '../components/Dashboard/Images'
+
 import { isLoggedIn } from '../api/api'
 
 Vue.use(Router)
@@ -14,6 +18,28 @@ let router = new Router({
     meta: {
       requiresAuth: false
     }
+  }, {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    meta: {
+      requiresAuth: true
+    },
+    children: [{
+      path: '/dashboard/posts',
+      name: 'posts',
+      component: Posts,
+      meta: {
+        requiresAuth: true
+      }
+    },{
+      path: '/dashboard/images',
+      name: 'images',
+      component: Images,
+      meta: {
+        requiresAuth: true
+      }
+    }]
   }, {
     path: '/editor',
     name: 'editor',

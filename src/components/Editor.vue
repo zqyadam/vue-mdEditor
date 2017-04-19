@@ -11,6 +11,9 @@
         </template>
       </el-button-group>
       <el-button-group class="toolbar-right">
+        <el-tooltip effect="dark" content="进入管理面板" placement="bottom">
+          <el-button icon="z-guanli" size="small" class="dark" @click="$router.push({name:'dashboard'})">管理</el-button>
+        </el-tooltip>
         <el-tooltip effect="dark" content="退出" placement="bottom">
           <el-button icon="z-logout" size="small" class="dark" @click="logout">退出</el-button>
         </el-tooltip>
@@ -179,6 +182,8 @@ export default {
       },
       uploadingImageFile: function(filePromise) {
         let _this = this;
+        _this.cm.setOption('readOnly',true)
+        
         _this.uploadingImage = true;
         _this.uploadingImageText = '准备开始上传...';
         filePromise.save({
@@ -213,6 +218,7 @@ export default {
             type: 'success'
           })
 
+          _this.cm.setOption('readOnly',false)
         }, function(err) {
           _this.uploadingImage = false;
           console.log(err);
@@ -220,6 +226,7 @@ export default {
             message: '图片上传失败！',
             type: 'error'
           })
+          _this.cm.setOption('readOnly',false)
         })
       },
       logout: function() {
@@ -300,13 +307,13 @@ export default {
               _this.$message({
                 message: '执行保存文件内容，待后续完善',
                 type: 'warning',
-                showClose:true
+                showClose: true
               })
             }).catch(function() {
               _this.$message({
                 message: '文件未保存！',
                 type: 'warning',
-                showClose:true
+                showClose: true
               })
             }).finally(function() {
               _this.openLocalFile(file)

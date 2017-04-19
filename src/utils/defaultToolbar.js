@@ -63,40 +63,52 @@ export const toolbarHandlers = {
     cm.redo()
   },
   bold: function(cm) {
-    Common.setWrapLabel(cm, '**')
+    Common.setWrapLabel(cm, '**');
+    cm.focus();
   },
   italic: function(cm) {
     Common.setWrapLabel(cm, '*')
+    cm.focus();
   },
   quote: function(cm) {
     Common.setStartLabel(cm, '> ')
+    cm.focus();
   },
   h1: function(cm) {
     Common.setStartLabel(cm, '# ')
+    cm.focus();
   },
   h2: function(cm) {
     Common.setStartLabel(cm, '## ')
+    cm.focus();
   },
   h3: function(cm) {
     Common.setStartLabel(cm, '### ')
+    cm.focus();
   },
   h4: function(cm) {
     Common.setStartLabel(cm, '#### ')
+    cm.focus();
   },
   h5: function(cm) {
     Common.setStartLabel(cm, '##### ')
+    cm.focus();
   },
   h6: function(cm) {
     Common.setStartLabel(cm, '###### ')
+    cm.focus();
   },
   ul: function(cm) {
     Common.setStartLabel(cm, '- ')
+    cm.focus();
   },
   ol: function(cm) {
     Common.setStartLabel(cm, '1. ')
+    cm.focus();
   },
   hr: function(cm) {
     Common.insertLabel(cm, '\n\n------\n\n')
+    cm.focus();
   },
   link: function(cm, _this) {
     _this.currentDialog = 'linkDialog';
@@ -110,6 +122,7 @@ export const toolbarHandlers = {
   },
   inlineCode: function(cm) {
     Common.setWrapLabel(cm, '\`');
+    cm.focus();
   },
   blockCode: function(cm) {
     let defaultLang = 'javascript'
@@ -129,6 +142,7 @@ export const toolbarHandlers = {
         cm.setSelection({ line: pos.line, ch: 3 }, { line: pos.line, ch: 3 + defaultLang.length })
       }
     }
+    cm.focus();
   },
   previewMode: function(cm, _this) {
     _this.readShow = true;
@@ -148,6 +162,7 @@ export const toolbarHandlers = {
   },
   exchange: function(cm, _this) {
     _this.layoutDirection = !_this.layoutDirection;
+    cm.focus();
   },
   // 不显示在工具栏的命令，仅支持快捷键
   t: function(cm) { // Ctrl+T
@@ -158,6 +173,7 @@ export const toolbarHandlers = {
     } else {
       Common.setStartLabel(cm, '# ')
     }
+    cm.focus();
   },
   linkWithoutDialog: function(cm) { // Ctrl+Shift+L
     if (cm.somethingSelected()) {
@@ -171,6 +187,7 @@ export const toolbarHandlers = {
       line: pos.line,
       ch: pos.ch - 1
     })
+    cm.focus();
   },
 
   // 向后添加行

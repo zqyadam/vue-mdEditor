@@ -1,7 +1,7 @@
 <template>
   <div class="fit">
     <div id="container">
-      <img src="../assets/MarkdownLogo.jpg" alt="">
+      <img src="../assets/MarkdownLogo_mini.png" alt="MDLogo">
       <div>
         <div id="fm-inputs">
           <!-- inputs -->
@@ -111,7 +111,7 @@ export default {
 .fit {
   width: 100%;
   height: 100%;
-  background: url('../assets/LoginBackgroundImage.png') center center;
+  background: url('../assets/LoginBackgroundImage_mini.png') center center;
   background-size: cover;
   position: relative;
 }
