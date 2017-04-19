@@ -34,7 +34,8 @@
     </div>
     <!--  hidden dialogs -_-!!  -->
     <linkDialog  :options="{cm:cm, show:linkDialog}" @close="linkDialog = false"></linkDialog>
-    <!-- <imageDialog v-else-if="currentDialog == 'imageDialog'" :options="dialogOptions" @uploadingImageFile="uploadingImageFile"></imageDialog> -->
+    <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile
+="uploadingImageFile" @close="imageDialog = false"></imageDialog>
   </div>
 </template>
 <script>
@@ -108,9 +109,7 @@ export default {
         toolbarHandlers: toolbarHandlers,
         // dialog options
         linkDialog: false,
-        // dialogOptions: {
-        //   cm: null
-        // },
+        imageDialog: false,
         // upload image
         uploadingImage: false,
         uploadingImageText: ''

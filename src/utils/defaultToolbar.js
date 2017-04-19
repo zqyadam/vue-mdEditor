@@ -115,9 +115,8 @@ export const toolbarHandlers = {
     _this.linkDialog = true;
   },
   image: function(cm, _this) {
-    _this.currentDialog = 'imageDialog';
-    _this.dialogOptions.cm = cm;
-    _this.dialogOptions.show = true;
+    _this.cm.setOption('readOnly',true)
+    _this.imageDialog = true;
   },
   inlineCode: function(cm) {
     Common.setWrapLabel(cm, '\`');

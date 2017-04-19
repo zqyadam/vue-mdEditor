@@ -12,7 +12,7 @@ import {
 export default {
   data() {
       return {
-        accepts: 'image/jpeg, image/jpg, image/png, image/bmp, image/gif',
+        accepts:  'image/*'
       }
     },
     props: {
@@ -23,14 +23,14 @@ export default {
     },
     methods: {
       close: function() {
-        this.options.show = false;
+        this.options.cm.setOption('readOnly',false)
         this.options.cm.focus();
+        this.$emit('close')
       },
       upload: function(file) {
-        console.log(file);
         let filePromise = requestImageUploadFromLocal(file);
-        this.$emit('uploadingImageFile', filePromise);
         this.close();
+        this.$emit('uploadingImageFile', filePromise);
         return false;
       }
     }
