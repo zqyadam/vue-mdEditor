@@ -2,7 +2,7 @@
   <el-dialog v-model="options.show" title="添加链接" :close-on-press-escape="true"  @open="open" :modal="false" :close-on-click-modal="false">
     <el-form label-width="80px" label-position="right">
       <el-form-item label="链接内容">
-        <el-input v-model="linkText" :autofocus="true"></el-input>
+        <el-input v-model="linkText" autofocus="true"></el-input>
       </el-form-item>
       <el-form-item label="链接地址">
         <el-input v-model="linkAddress"></el-input>
@@ -31,7 +31,7 @@ export default {
       options: {
         type: Object,
         required: true
-      }
+      },
     },
     methods: {
       cancel: function() {
@@ -46,8 +46,9 @@ export default {
         this.linkText = '';
         this.linkTitle = '';
         this.linkAddress = '';
-        this.options.show = false;
+        this.options.cm.setOption('readOnly',false)
         this.options.cm.focus();
+        this.$emit('close')
       },
       open: function() {
         if (this.options.cm.somethingSelected()) {

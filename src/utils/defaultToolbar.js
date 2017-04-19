@@ -111,9 +111,8 @@ export const toolbarHandlers = {
     cm.focus();
   },
   link: function(cm, _this) {
-    _this.currentDialog = 'linkDialog';
-    _this.dialogOptions.cm = cm;
-    _this.dialogOptions.show = true;
+    _this.cm.setOption('readOnly',true)
+    _this.linkDialog = true;
   },
   image: function(cm, _this) {
     _this.currentDialog = 'imageDialog';
@@ -168,6 +167,8 @@ export const toolbarHandlers = {
   t: function(cm) { // Ctrl+T
     let pos = cm.getCursor('from');
     let currentContent = cm.getLine(pos.line);
+    if (/^[#]{6}/.test(currentContent)) {return }
+
     if (currentContent.trim()[0] == '#') {
       Common.setStartLabel(cm, '#')
     } else {
@@ -185,7 +186,7 @@ export const toolbarHandlers = {
     let pos = cm.getCursor();
     cm.setCursor({
       line: pos.line,
-      ch: pos.ch - 1
+      ch: pos.ch - 3
     })
     cm.focus();
   },

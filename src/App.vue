@@ -19,9 +19,11 @@ body {
   height: 100%;
   width: 100%;
 }
+
 html {
   overflow: hidden;
 }
+
 body {
   align-items: center;
   background: radial-gradient( ellipse at center, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);

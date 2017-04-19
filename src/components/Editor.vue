@@ -32,9 +32,9 @@
         </div>
       </section>
     </div>
-    <!-- a very complex dialog -_-!!  -->
-    <linkDialog v-if="currentDialog == 'linkDialog'" :options="dialogOptions"></linkDialog>
-    <imageDialog v-else-if="currentDialog == 'imageDialog'" :options="dialogOptions" @uploadingImageFile="uploadingImageFile"></imageDialog>
+    <!--  hidden dialogs -_-!!  -->
+    <linkDialog  :options="{cm:cm, show:linkDialog}" @close="linkDialog = false"></linkDialog>
+    <!-- <imageDialog v-else-if="currentDialog == 'imageDialog'" :options="dialogOptions" @uploadingImageFile="uploadingImageFile"></imageDialog> -->
   </div>
 </template>
 <script>
@@ -89,7 +89,7 @@ export default {
   data() {
       return {
         MdContent: '',
-        cm: null,
+        cm: {},
         currentFileInfo: {},
         // layout options
         layoutDirection: true,
@@ -107,11 +107,10 @@ export default {
         toolbarIconTips: toolbarIconTips,
         toolbarHandlers: toolbarHandlers,
         // dialog options
-        currentDialog: 'imageDialog',
-        dialogOptions: {
-          show: false,
-          cm: null
-        },
+        linkDialog: false,
+        // dialogOptions: {
+        //   cm: null
+        // },
         // upload image
         uploadingImage: false,
         uploadingImageText: ''
@@ -121,6 +120,11 @@ export default {
       'linkDialog': linkDialog,
       'imageDialog': imageDialog
     },
+    // watch:{
+    //   '$route':function(to, from) {
+    //     console.log(to);
+    //   }
+    // },
     methods: {
       tocTreeToHtml: function(tree) {
         let startLabel = "<ul>";
@@ -183,7 +187,7 @@ export default {
       uploadingImageFile: function(filePromise) {
         let _this = this;
         _this.cm.setOption('readOnly',true)
-        
+
         _this.uploadingImage = true;
         _this.uploadingImageText = '准备开始上传...';
         filePromise.save({
@@ -408,7 +412,7 @@ export default {
         'Shift-Ctrl-L': () => {
           this.execuateCallback('linkWithoutDialog');
         },
-        'Ctrl-T': () => {
+        'Ctrl-Alt-T': () => {
           this.execuateCallback('t');
         },
         'Shift-Ctrl-P': () => {
