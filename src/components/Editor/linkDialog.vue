@@ -52,7 +52,6 @@ export default {
       },
       open: function() {
         if (this.options.cm.somethingSelected()) {
-          console.log(this.options.cm.getSelection());
           this.linkText = this.options.cm.getSelection();
         }
       }

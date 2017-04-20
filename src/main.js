@@ -7,6 +7,17 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import './icons/icons.css'
 
+Promise.prototype.finally = function(callback) {
+  let P = this.constructor;
+  return this.then(
+    value => P.resolve(callback()).then(() => value),
+    reason => P.resolve(callback()).then(() => {
+      throw reason
+    })
+  );
+};
+
+
 
 Vue.use(ElementUI)
 
@@ -19,4 +30,3 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
-

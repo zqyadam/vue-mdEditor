@@ -33,9 +33,9 @@
       </section>
     </div>
     <!--  hidden dialogs -_-!!  -->
-    <linkDialog  :options="{cm:cm, show:linkDialog}" @close="linkDialog = false"></linkDialog>
-    <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile
-="uploadingImageFile" @close="imageDialog = false"></imageDialog>
+    <linkDialog :options="{cm:cm, show:linkDialog}" @close="linkDialog = false"></linkDialog>
+    <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile="uploadingImageFile" @close="imageDialog = false"></imageDialog>
+    <newPostDialog :options="{cm:cm, show: newPostDialog}" @close="newPostDialog = false"></newPostDialog>
   </div>
 </template>
 <script>
@@ -85,6 +85,7 @@ import 'prismjs/plugins/toolbar/prism-toolbar.css'
 // dialog components
 import linkDialog from './Editor/linkDialog'
 import imageDialog from './Editor/imageDialog'
+import newPostDialog from './Editor/newPostDialog'
 
 export default {
   data() {
@@ -110,6 +111,7 @@ export default {
         // dialog options
         linkDialog: false,
         imageDialog: false,
+        newPostDialog:false,
         // upload image
         uploadingImage: false,
         uploadingImageText: ''
@@ -117,7 +119,8 @@ export default {
     },
     components: {
       'linkDialog': linkDialog,
-      'imageDialog': imageDialog
+      'imageDialog': imageDialog,
+      'newPostDialog': newPostDialog
     },
     // watch:{
     //   '$route':function(to, from) {
@@ -148,6 +151,7 @@ export default {
         let reader = new FileReader();
         reader.readAsText(file);
         reader.onload = function(e) {
+          localStorage.setItem('currentPostID','')
           _this.cm.clearHistory();
           _this.cm.setValue(this.result)
           _this.cm.markClean()
@@ -185,7 +189,7 @@ export default {
       },
       uploadingImageFile: function(filePromise) {
         let _this = this;
-        _this.cm.setOption('readOnly',true)
+        _this.cm.setOption('readOnly', true)
 
         _this.uploadingImage = true;
         _this.uploadingImageText = '准备开始上传...';
@@ -221,7 +225,7 @@ export default {
             type: 'success'
           })
 
-          _this.cm.setOption('readOnly',false)
+          _this.cm.setOption('readOnly', false)
         }, function(err) {
           _this.uploadingImage = false;
           console.log(err);
@@ -229,7 +233,7 @@ export default {
             message: '图片上传失败！',
             type: 'error'
           })
-          _this.cm.setOption('readOnly',false)
+          _this.cm.setOption('readOnly', false)
         })
       },
       logout: function() {

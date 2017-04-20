@@ -56,6 +56,46 @@ export const toolbarIconTips = {
   'exchange': '左右交换'
 }
 export const toolbarHandlers = {
+  newFile: function(cm, _this) {
+    if (_this.cm.getValue() !== '') {
+      _this.$confirm('是否保存当前文件？', '保存文件', {
+        confirmButtonText: '保存',
+        cancelButtonText: '不保存',
+        type: 'warning',
+        showClose: false,
+        callback: function(action, instance) {
+          // 保存
+          if (action === 'confirm') {
+            let currentPostID = localStorage.getItem('currentPostID');
+            if (currentPostID !== '') {
+              // 保存在网上
+            } else {
+              // 保存在本地
+
+            }
+            _this.$message({
+              message: '执行保存文件内容，待后续完善',
+              type: 'warning',
+              showClose: true
+            })
+          }
+          // 不保存
+          if (action === 'cancel') {
+            _this.$message({
+              message: '文件未保存！',
+              type: 'warning',
+              showClose: true
+            })
+          }
+          _this.cm.setOption('readOnly', true);
+          _this.newPostDialog = true;
+        }
+      })
+    } else {
+      _this.cm.setOption('readOnly', true)
+      _this.newPostDialog = true;
+    }
+  },
   undo: function(cm) {
     cm.undo();
   },
@@ -111,11 +151,11 @@ export const toolbarHandlers = {
     cm.focus();
   },
   link: function(cm, _this) {
-    _this.cm.setOption('readOnly',true)
+    _this.cm.setOption('readOnly', true)
     _this.linkDialog = true;
   },
   image: function(cm, _this) {
-    _this.cm.setOption('readOnly',true)
+    _this.cm.setOption('readOnly', true)
     _this.imageDialog = true;
   },
   inlineCode: function(cm) {
@@ -166,7 +206,9 @@ export const toolbarHandlers = {
   t: function(cm) { // Ctrl+T
     let pos = cm.getCursor('from');
     let currentContent = cm.getLine(pos.line);
-    if (/^[#]{6}/.test(currentContent)) {return }
+    if (/^[#]{6}/.test(currentContent)) {
+      return
+    }
 
     if (currentContent.trim()[0] == '#') {
       Common.setStartLabel(cm, '#')

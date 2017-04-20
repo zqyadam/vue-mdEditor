@@ -14,6 +14,8 @@ AV.init({
   appKey: APP_KEY
 });
 
+let Post = AV.Object.extend('Post')
+
 export let requestLogin = function(username, password) {
   if (!username || !password) {
     return null
@@ -39,7 +41,6 @@ export let requestImageUploadFromLocal = function(fileObj) {
   return file;
 }
 
-
 export let requestImageUploadFromStream = function(fileName, fileStream) {
   console.log('uploading image from stream');
   let data = { base64: fileStream };
@@ -49,4 +50,15 @@ export let requestImageUploadFromStream = function(fileName, fileStream) {
   acl.setWriteAccess(AV.User.current(), true);
   file.setACL(acl)
   return file
+}
+
+export let createNewPost = function(title, content='') {
+  let post = new Post();
+  let acl = new AV.ACL();
+  acl.setPublicReadAccess(true);
+  acl.setWriteAccess(AV.User.current(), true);
+  post.set('title', title);
+  post.set('content', content)
+  post.setACL(acl);
+  return post.save();
 }
