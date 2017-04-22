@@ -14,7 +14,8 @@ AV.init({
   appKey: APP_KEY
 });
 
-let Post = AV.Object.extend('Post')
+let Post = AV.Object.extend('Post');
+let Category = AV.Object.extend('Category');
 
 export let requestLogin = function(username, password) {
   if (!username || !password) {
@@ -52,13 +53,38 @@ export let requestImageUploadFromStream = function(fileName, fileStream) {
   return file
 }
 
-export let createNewPost = function(title, content='') {
+export let createNewPost = function(title, content = '') {
   let post = new Post();
   let acl = new AV.ACL();
   acl.setPublicReadAccess(true);
   acl.setWriteAccess(AV.User.current(), true);
   post.set('title', title);
-  post.set('content', content)
+  post.set('content', content);
+  post.set('owner', AV.User.current())
   post.setACL(acl);
   return post.save();
 }
+
+
+export let getCategories = function() {
+  let query = new AV.Query('Category');
+  query.equalTo('owner',AV.User.current());
+  return query.find();
+
+}
+
+export let addCategory = function(categoryName) {
+  let cat = new Category();
+  let acl = new AV.ACL();
+  acl.setPublicReadAccess(true);
+  acl.setWriteAccess(AV.User.current(), true);
+  cat.set('owner', AV.User.current())
+  cat.set('category', categoryName);
+  cat.setACL(acl);
+
+  return cat.save();
+}
+
+// addCategory('js')
+// addCategory('html')
+// addCategory('css')

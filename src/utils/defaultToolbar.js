@@ -32,6 +32,9 @@ export const toolbarIconsClass = {
 }
 
 export const toolbarIconTips = {
+  'newFile':'新建网络文章',
+  'openFile':'打开文章',
+  'saveFile': '保存文章',
   'undo': '撤销(Ctrl+Z)',
   'redo': '重做',
   'bold': '加粗(Ctrl+B)',
@@ -82,7 +85,7 @@ export const toolbarHandlers = {
           // 不保存
           if (action === 'cancel') {
             _this.$message({
-              message: '文件未保存！',
+              message: '文章未保存！',
               type: 'warning',
               showClose: true
             })
