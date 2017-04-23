@@ -35,7 +35,9 @@
     <!--  hidden dialogs -_-!!  -->
     <linkDialog :options="{cm:cm, show:linkDialog}" @close="linkDialog = false"></linkDialog>
     <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile="uploadingImageFile" @close="imageDialog = false"></imageDialog>
-    <newPostDialog :options="{cm:cm, show: newPostDialog}" @close="newPostDialog = false"></newPostDialog>
+    <!-- <newPostDialog :options="{cm:cm, show: newPostDialog}" @close="newPostDialog = false"></newPostDialog> -->
+    <openPostDialog :options="{cm:cm, show:openPostDialog}"></openPostDialog>
+    <savePostDialog :options="{cm:cm, show:savePostDialog}"></savePostDialog>
   </div>
 </template>
 <script>
@@ -49,7 +51,8 @@ import {
   toolbar,
   toolbarIconsClass,
   toolbarIconTips,
-  toolbarHandlers
+  toolbarHandlers,
+  askSave
 } from '../utils/defaultToolbar.js'
 
 import CodeMirror from 'codemirror/lib/codemirror.js'
@@ -85,13 +88,17 @@ import 'prismjs/plugins/toolbar/prism-toolbar.css'
 // dialog components
 import linkDialog from './Editor/linkDialog'
 import imageDialog from './Editor/imageDialog'
-import newPostDialog from './Editor/newPostDialog'
+import openPostDialog from './Editor/openPostDialog'
+import savePostDialog from './Editor/savePostDialog'
+
 
 export default {
   data() {
       return {
         MdContent: '',
+        tocTree: [],
         cm: {},
+        webPost: {},
         currentFileInfo: {},
         // layout options
         layoutDirection: true,
@@ -111,7 +118,11 @@ export default {
         // dialog options
         linkDialog: false,
         imageDialog: false,
-        newPostDialog:false,
+        newPostDialog: false,
+        openPostDialog: false,
+        savePostDialog: false,
+        savingPost: false,
+        afterSaveCallback: null,
         // upload image
         uploadingImage: false,
         uploadingImageText: ''
@@ -120,13 +131,9 @@ export default {
     components: {
       'linkDialog': linkDialog,
       'imageDialog': imageDialog,
-      'newPostDialog': newPostDialog
+      'openPostDialog': openPostDialog,
+      'savePostDialog': savePostDialog
     },
-    // watch:{
-    //   '$route':function(to, from) {
-    //     console.log(to);
-    //   }
-    // },
     methods: {
       tocTreeToHtml: function(tree) {
         let startLabel = "<ul>";
@@ -151,10 +158,11 @@ export default {
         let reader = new FileReader();
         reader.readAsText(file);
         reader.onload = function(e) {
-          localStorage.setItem('currentPostID','')
+          localStorage.setItem('currentPostID', '')
           _this.cm.clearHistory();
           _this.cm.setValue(this.result)
           _this.cm.markClean()
+          _this.webPost = {};
           _this.currentFileInfo.filepath = file.path;
         }
       },
@@ -241,13 +249,13 @@ export default {
         this.$router.push({
           name: 'login'
         })
-      }
+      },
     },
     computed: {
       HTMLContent: function() {
         let Content = marked(this.MdContent);
-        let tocTree = marked.tocToTree();
-        let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, this.tocTreeToHtml(tocTree))
+        this.tocTree = marked.tocToTree();
+        let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, this.tocTreeToHtml(this.tocTree))
         return html;
       }
     },
@@ -258,7 +266,8 @@ export default {
           // DOM 更新了
           Prism.highlightAll()
         })
-      }
+      },
+
     },
     mounted: function() {
       let _this = this;
@@ -302,33 +311,9 @@ export default {
         /* read text file */
         if (/\.(md|txt)$/i.test(file.name)) {
           // 询问是否保存当前文件
-          if (_this.cm.getValue() !== '') {
-            _this.$confirm('是否保存当前文件？', '保存文件', {
-              confirmButtonText: '保存',
-              cancelButtonText: '不保存',
-              type: 'warning',
-              showClose: false
-            }).then(function() {
-              // todo something
-
-              _this.$message({
-                message: '执行保存文件内容，待后续完善',
-                type: 'warning',
-                showClose: true
-              })
-            }).catch(function() {
-              _this.$message({
-                message: '文件未保存！',
-                type: 'warning',
-                showClose: true
-              })
-            }).finally(function() {
-              _this.openLocalFile(file)
-            })
-          } else {
+          askSave(_this, function() {
             _this.openLocalFile(file)
-          }
-
+          })
         } else if (/^image\//i.test(file.type)) {
           // read and upload image
           _this.loading = true;
@@ -369,73 +354,80 @@ export default {
       })
 
 
-
       // 添加快捷键
       this.cm.setOption('extraKeys', {
-        'Enter': "newlineAndIndentContinueMarkdownList",
-        'Ctrl-B': () => {
-          this.execuateCallback('bold');
-        },
-        'Ctrl-I': () => {
-          this.execuateCallback('italic');
-        },
-        'Ctrl-Q': () => {
-          this.execuateCallback('quote');
-        },
-        'Ctrl-1': () => {
-          this.execuateCallback('h1');
-        },
-        'Ctrl-2': () => {
-          this.execuateCallback('h2');
-        },
-        'Ctrl-3': () => {
-          this.execuateCallback('h3');
-        },
-        'Ctrl-4': () => {
-          this.execuateCallback('h4');
-        },
-        'Ctrl-5': () => {
-          this.execuateCallback('h5');
-        },
-        'Ctrl-6': () => {
-          this.execuateCallback('h6');
-        },
-        'Shift-Ctrl-U': () => {
-          this.execuateCallback('ul');
-        },
-        'Shift-Ctrl-O': () => {
-          this.execuateCallback('ol');
-        },
-        'Ctrl-H': () => {
-          this.execuateCallback('hr');
-        },
-        'Ctrl-L': () => {
-          this.execuateCallback('link');
-        },
-        'Shift-Ctrl-L': () => {
-          this.execuateCallback('linkWithoutDialog');
-        },
-        'Ctrl-Alt-T': () => {
-          this.execuateCallback('t');
-        },
-        'Shift-Ctrl-P': () => {
-          this.execuateCallback('image');
-        },
-        'Ctrl-K': () => {
-          this.execuateCallback('inlineCode');
-        },
-        'Shift-Ctrl-K': () => {
-          this.execuateCallback('blockCode');
-        },
-        'Ctrl-Enter': () => {
-          this.execuateCallback('addNewLineAppend');
-        },
-        'Shift-Ctrl-Enter': () => {
-          this.execuateCallback('addNewLinePrepend');
-        }
-      })
-
-      // this.cm.setValue(fakeData)
+          'Enter': "newlineAndIndentContinueMarkdownList",
+          'Ctrl-N': () => {
+            this.execuateCallback('newFile');
+          },
+          'Ctrl-O': () => {
+            this.execuateCallback('openFile');
+          },
+          'Ctrl-S': () => {
+            this.execuateCallback('saveFile');
+          },
+          'Ctrl-B': () => {
+            this.execuateCallback('bold');
+          },
+          'Ctrl-I': () => {
+            this.execuateCallback('italic');
+          },
+          'Ctrl-Q': () => {
+            this.execuateCallback('quote');
+          },
+          'Ctrl-1': () => {
+            this.execuateCallback('h1');
+          },
+          'Ctrl-2': () => {
+            this.execuateCallback('h2');
+          },
+          'Ctrl-3': () => {
+            this.execuateCallback('h3');
+          },
+          'Ctrl-4': () => {
+            this.execuateCallback('h4');
+          },
+          'Ctrl-5': () => {
+            this.execuateCallback('h5');
+          },
+          'Ctrl-6': () => {
+            this.execuateCallback('h6');
+          },
+          'Shift-Ctrl-U': () => {
+            this.execuateCallback('ul');
+          },
+          'Shift-Ctrl-O': () => {
+            this.execuateCallback('ol');
+          },
+          'Ctrl-H': () => {
+            this.execuateCallback('hr');
+          },
+          'Ctrl-L': () => {
+            this.execuateCallback('link');
+          },
+          'Shift-Ctrl-L': () => {
+            this.execuateCallback('linkWithoutDialog');
+          },
+          'Ctrl-Alt-T': () => {
+            this.execuateCallback('t');
+          },
+          'Shift-Ctrl-P': () => {
+            this.execuateCallback('image');
+          },
+          'Ctrl-K': () => {
+            this.execuateCallback('inlineCode');
+          },
+          'Shift-Ctrl-K': () => {
+            this.execuateCallback('blockCode');
+          },
+          'Ctrl-Enter': () => {
+            this.execuateCallback('addNewLineAppend');
+          },
+          'Shift-Ctrl-Enter': () => {
+            this.execuateCallback('addNewLinePrepend');
+          }
+        })
+        // this.cm.setValue(fakeData)
 
     }
 }

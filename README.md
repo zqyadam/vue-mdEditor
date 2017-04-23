@@ -1,6 +1,21 @@
-# vue-mdEditor
+# vue-mdEditor一个自己用的Markdown网络笔记本
 
-> A Markdown Editor based on Vue.js and LeanCloud
+> 一个基于Vue.js的Markdown编辑器，UI基于ElementUI，数据存储在LeanCloud
+ 
+## Demo
+
+[Demo](http://mdDemo.adamin.win)
+
+email: a@qq.com
+password :111
+
+## 背景
+之前一直在使用CmdMarkdown编辑器，而且非常好用，但是对于图片的上传必须升级会员才行，这个。。。
+伴着学习Vue，所以就自己试着写一个吧(∩_∩)，要求不高，能用就行~~
+
+### 为什么用LeanCloud
+因为免费，API简单，自己使用足够用~
+
 
 ## 待实现功能
 - [ ] 用户
@@ -9,7 +24,7 @@
 	- [x] 登出
 - [ ] 编辑
 	- 工具栏功能
-    - [ ] 新建/打开/保存
+    - [x] 新建/打开/保存
     - [x] 撤销(Ctrl+Z)
     - [x] 重做(Ctrl+Y)
     - [x] 加粗(Ctrl+B)
@@ -39,11 +54,12 @@
     - [x] 同步滚动
     - [x] TOC目录
     - [x] 拖拽打开本地MD文件
-    - [ ] 保存本地MD文件
 - [ ] 管理
 	- [ ] 文章管理
 	- [ ] 图像管理
 	- [ ] 基本设置
+
+
 
 
 

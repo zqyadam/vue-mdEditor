@@ -53,24 +53,70 @@ export let requestImageUploadFromStream = function(fileName, fileStream) {
   return file
 }
 
-export let createNewPost = function(title, content = '') {
+export let createNewPost = function(title, content = '', categoryID = '') {
+  // 查询分类
+  let category;
+  // if (categoryID === '') {
+  //   // 不存在分类ID
+  //   let categoryQuery = new AV.Query('Category');
+  //   categoryQuery.equalTo('owner', AV.User.current());
+  //   categoryQuery.contains('category', '未分类');
+  //   categoryQuery.find().then(function(result) {
+  //     createNewPost(title, content, result.id)
+  //     return 
+  //   }, function() {
+  //     addCategory('未分类').then(function(result) {
+  //       createNewPost(title, content, result.id)
+  //     })
+  //   })
+  // } else if (typeof categoryID === 'Object') {
+  //   // 分类对象
+  //   category = categoryID;
+  // } else {
+    // 分类ID
+    category = new AV.Object.createWithoutData('Category', categoryID)
+  // }
+  // 创建文章
   let post = new Post();
+
+  // 设置文章属性
+  post.set('title', title);
+  post.set('category', category);
+  post.set('content', content);
+  post.set('owner', AV.User.current())
+    // 添加acl权限
   let acl = new AV.ACL();
   acl.setPublicReadAccess(true);
   acl.setWriteAccess(AV.User.current(), true);
-  post.set('title', title);
-  post.set('content', content);
-  post.set('owner', AV.User.current())
   post.setACL(acl);
+  console.log(post);
   return post.save();
 }
 
+export let savePostWithoutData = function(postId, postTitle, postContent) {
+  let post = AV.Object.createWithoutData('Post', postId)
+  post.set('title', postTitle);
+  post.set('content', postContent);
+  return post.save();
+}
+
+export let savePost = function(post, postTitle, postContent) {
+  post.set('title', postTitle);
+  post.set('content', postContent);
+  return post.save();
+}
+
+export let getAllPosts = function() {
+  let query = new AV.Query('Post');
+  query.equalTo('owner', AV.User.current());
+  query.include(['category']);
+  return query.find();
+}
 
 export let getCategories = function() {
   let query = new AV.Query('Category');
-  query.equalTo('owner',AV.User.current());
+  query.equalTo('owner', AV.User.current());
   return query.find();
-
 }
 
 export let addCategory = function(categoryName) {

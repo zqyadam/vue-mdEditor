@@ -1,4 +1,4 @@
-import { requestImageUploadFromLocal } from '../api/api.js'
+import { requestImageUploadFromLocal, createNewPost } from '../api/api.js'
 
 export const toolbar = ['newFile', 'openFile', 'saveFile', 'split', 'undo', 'redo', 'bold', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image', 'inlineCode', 'blockCode', 'split', 'previewMode', 'editMode', 'readMode', 'exchange'];
 
@@ -32,8 +32,8 @@ export const toolbarIconsClass = {
 }
 
 export const toolbarIconTips = {
-  'newFile':'新建网络文章',
-  'openFile':'打开文章',
+  'newFile': '新建网络文章',
+  'openFile': '打开文章',
   'saveFile': '保存文章',
   'undo': '撤销(Ctrl+Z)',
   'redo': '重做',
@@ -60,44 +60,25 @@ export const toolbarIconTips = {
 }
 export const toolbarHandlers = {
   newFile: function(cm, _this) {
-    if (_this.cm.getValue() !== '') {
-      _this.$confirm('是否保存当前文件？', '保存文件', {
-        confirmButtonText: '保存',
-        cancelButtonText: '不保存',
-        type: 'warning',
-        showClose: false,
-        callback: function(action, instance) {
-          // 保存
-          if (action === 'confirm') {
-            let currentPostID = localStorage.getItem('currentPostID');
-            if (currentPostID !== '') {
-              // 保存在网上
-            } else {
-              // 保存在本地
-
-            }
-            _this.$message({
-              message: '执行保存文件内容，待后续完善',
-              type: 'warning',
-              showClose: true
-            })
-          }
-          // 不保存
-          if (action === 'cancel') {
-            _this.$message({
-              message: '文章未保存！',
-              type: 'warning',
-              showClose: true
-            })
-          }
-          _this.cm.setOption('readOnly', true);
-          _this.newPostDialog = true;
-        }
-      })
-    } else {
-      _this.cm.setOption('readOnly', true)
-      _this.newPostDialog = true;
-    }
+    askSave(_this, function() {
+      _this.cm.setValue('');
+      _this.cm.clearHistory();
+      _this.cm.markClean();
+      let pos = cm.getCursor();
+      _this.cm.replaceSelection('# \n\n');
+      _this.cm.setCursor({ line: pos.line, ch: pos.ch + 2 });
+      _this.cm.focus();
+      _this.webPost = {};
+    })
+  },
+  openFile: function(cm, _this) {
+    askSave(_this, function() {
+      console.log('显示打开文件对话框');
+      _this.openPostDialog = true;
+    })
+  },
+  saveFile: function(cm, _this) {
+    savePost(_this)
   },
   undo: function(cm) {
     cm.undo();
@@ -290,3 +271,84 @@ let Common = (function() {
     insertLabel: insertLabel
   }
 })()
+
+
+/**
+ * _this: Editor实例
+ * cb: 询问后执行的回调函数
+ */
+export function askSave(_this, cb) {
+  if (_this.cm.getValue().trim() !== '' && (!_this.cm.isClean() || !_this.webPost.id)) {
+    console.log('询问是否保存当前文件！');
+    _this.$confirm('是否保存当前文件？', '保存文件', {
+      confirmButtonText: '保存',
+      cancelButtonText: '不保存',
+      type: 'warning',
+      showClose: false,
+      callback: function(action, instance) {
+        // 保存
+        if (action === 'confirm') {
+          savePost(_this, cb)
+        }
+        // 不保存
+        if (action === 'cancel') {
+          cb()
+        }
+      }
+    })
+  } else {
+    // 文件没有内容或者没有过修改
+    console.log('文件没有内容或者没有过修改');
+    if (cb) { cb() }
+  }
+
+}
+
+
+function savePost(_this, cb) {
+  if (_this.savingPost) {
+    _this.$message({
+      message: '正在保存，请稍后重试',
+        type: 'warning',
+        showClose: true
+    })
+    return 
+  }
+
+  let postTitle = '未命名';
+  let postContent = _this.cm.getValue();
+  if (_this.tocTree.length !== 0) {
+    postTitle = _this.tocTree[0].text
+  }
+
+  if (_this.webPost.id) {
+    // 网上存在，直接保存
+    let post = _this.webPost;
+    post.set('title', postTitle)
+    post.set('content', postContent)
+    _this.savingPost = true;
+    post.save().then(function(post) {
+      _this.savingPost = false;
+      _this.webPost = post;
+      _this.cm.markClean();
+      _this.$message({
+        message: '文章保存成功！',
+        type: 'success',
+        showClose: true
+      });
+      cb();
+    }, function(err) {
+      _this.$message({
+        message: '文章保存失败！',
+        type: 'error',
+        showClose: true
+      })
+      _this.savingPost = false;
+    })
+  } else {
+    // 新建文章并保存
+    _this.afterSaveCallback = cb
+    _this.savePostDialog = true;
+  }
+
+}

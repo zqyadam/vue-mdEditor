@@ -14,6 +14,7 @@
     "element-ui": "^1.2.8",
     "github-markdown-css": "^2.4.1",
     "marked": "^0.3.6",
+    "nprogress": "^0.2.0",
     "prismjs": "^1.6.0",
     "vue": "^2.2.2",
     "vue-router": "^2.3.0"

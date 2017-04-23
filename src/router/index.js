@@ -45,7 +45,10 @@ let router = new Router({
     name: 'editor',
     component: Editor,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      callback:function() {
+        localStorage.setItem('currentPostID','');
+      }
     }
   }, {
     path: '*',
@@ -58,6 +61,10 @@ router.beforeEach((to, form, next) => {
     if (!isLoggedIn()) {
       next({ name: 'login' })
     } else {
+      if (to.meta.callback) {
+      console.log(to);
+        to.meta.callback();
+      }
       next();
     }
   } else {
