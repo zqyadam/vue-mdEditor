@@ -1,6 +1,6 @@
 import { requestImageUploadFromLocal, createNewPost } from '../api/api.js'
 
-export const toolbar = ['newFile', 'openFile', 'saveFile', 'split', 'undo', 'redo', 'bold', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image', 'inlineCode', 'blockCode', 'split', 'previewMode', 'editMode', 'readMode', 'exchange'];
+export const toolbar = ['newFile', 'openFile', 'saveFile', 'split', 'undo', 'redo', 'bold', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image','table', 'inlineCode', 'blockCode', 'split', 'previewMode', 'editMode', 'readMode', 'exchange'];
 
 export const toolbarIconsClass = {
   'newFile': 'z-file-o',
@@ -22,13 +22,13 @@ export const toolbarIconsClass = {
   'hr': 'z-hengxian',
   'link': 'z-module-link',
   'image': 'z-tupian',
+  'table':'z-table',
   'inlineCode': 'z-ai-code',
   'blockCode': 'z-daimakuai',
   'previewMode': 'z-shuanglan',
   'editMode': 'z-bianji',
   'readMode': 'z-computer',
-  'exchange': 'z-exchange',
-
+  'exchange': 'z-exchange'
 }
 
 export const toolbarIconTips = {
@@ -51,6 +51,7 @@ export const toolbarIconTips = {
   'hr': '横线(Ctrl+H)',
   'link': '链接(Ctrl+L或Ctrl+Shift+L)',
   'image': '图像(Ctrl+Shift+P)',
+  'table':'表格',
   'inlineCode': '行内代码(Ctrl+K)',
   'blockCode': '代码块(Ctrl+Shift+K)',
   'previewMode': '实时预览',
@@ -141,6 +142,9 @@ export const toolbarHandlers = {
   image: function(cm, _this) {
     _this.cm.setOption('readOnly', true)
     _this.imageDialog = true;
+  },
+  table:function(cm, _this) {
+    _this.tableDialog = true;
   },
   inlineCode: function(cm) {
     Common.setWrapLabel(cm, '\`');

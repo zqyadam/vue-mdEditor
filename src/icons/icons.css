@@ -1,269 +1,143 @@
 /* [class^="el-icon-z"], [class*=" el-icon-z"] */
 
-@font-face {
-  font-family: "iconfont";
-  src: url('//at.alicdn.com/t/font_591aipazhm3ivn29.eot?t=1492529324911');
-  /* IE9*/
-  src: url('//at.alicdn.com/t/font_591aipazhm3ivn29.eot?t=1492529324911#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('//at.alicdn.com/t/font_591aipazhm3ivn29.woff?t=1492529324911') format('woff'), /* chrome, firefox */
-  url('//at.alicdn.com/t/font_591aipazhm3ivn29.ttf?t=1492529324911') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('//at.alicdn.com/t/font_591aipazhm3ivn29.svg?t=1492529324911#iconfont') format('svg');
-  /* iOS 4.1- */
+@font-face {font-family: "iconfont";
+  src: url('//at.alicdn.com/t/font_p2uvaajyjsq3erk9.eot?t=1493045680087'); /* IE9*/
+  src: url('//at.alicdn.com/t/font_p2uvaajyjsq3erk9.eot?t=1493045680087#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/font_p2uvaajyjsq3erk9.woff?t=1493045680087') format('woff'), /* chrome, firefox */
+  url('//at.alicdn.com/t/font_p2uvaajyjsq3erk9.ttf?t=1493045680087') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/font_p2uvaajyjsq3erk9.svg?t=1493045680087#iconfont') format('svg'); /* iOS 4.1- */
 }
 
-[class^="el-icon-z"],
-[class*=" el-icon-z"] {
-  font-family: "iconfont" !important;
-  font-size: 16px;
-  font-style: normal;
+[class^="el-icon-z"], [class*=" el-icon-z"] {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.el-icon-z-fangda:before {
-  content: "\e600";
-}
+.el-icon-z-fangda:before { content: "\e600"; }
 
-.el-icon-z-logout:before {
-  content: "\e602";
-}
+.el-icon-z-logout:before { content: "\e602"; }
 
-.el-icon-z-yinyong:before {
-  content: "\e620";
-}
+.el-icon-z-yinyong:before { content: "\e620"; }
 
-.el-icon-z-bianji:before {
-  content: "\e646";
-}
+.el-icon-z-bianji:before { content: "\e646"; }
 
-.el-icon-z-iconfontsuoxiao:before {
-  content: "\e63d";
-}
+.el-icon-z-iconfontsuoxiao:before { content: "\e63d"; }
 
-.el-icon-z-configuration:before {
-  content: "\e730";
-}
+.el-icon-z-configuration:before { content: "\e730"; }
 
-.el-icon-z-bold:before {
-  content: "\e601";
-}
+.el-icon-z-bold:before { content: "\e601"; }
 
-.el-icon-z-daima:before {
-  content: "\e623";
-}
+.el-icon-z-daima:before { content: "\e623"; }
 
-.el-icon-z-shanchuxian:before {
-  content: "\e743";
-}
+.el-icon-z-shanchuxian:before { content: "\e743"; }
 
-.el-icon-z-email:before {
-  content: "\e60b";
-}
+.el-icon-z-email:before { content: "\e60b"; }
 
-.el-icon-z-dakai:before {
-  content: "\e651";
-}
+.el-icon-z-table:before { content: "\e7b5"; }
 
-.el-icon-z-icon:before {
-  content: "\e60c";
-}
+.el-icon-z-dakai:before { content: "\e651"; }
 
-.el-icon-z-iconfontcolor16:before {
-  content: "\e67d";
-}
+.el-icon-z-icon:before { content: "\e60c"; }
 
-.el-icon-z-tupian:before {
-  content: "\e6ee";
-}
+.el-icon-z-iconfontcolor16:before { content: "\e67d"; }
 
-.el-icon-z-exchange:before {
-  content: "\e61e";
-}
+.el-icon-z-tupian:before { content: "\e6ee"; }
 
-.el-icon-z-manage_selected:before {
-  content: "\e610";
-}
+.el-icon-z-exchange:before { content: "\e61e"; }
 
-.el-icon-z-manage:before {
-  content: "\e611";
-}
+.el-icon-z-manage_selected:before { content: "\e610"; }
 
-.el-icon-z-guanli:before {
-  content: "\e7b1";
-}
+.el-icon-z-manage:before { content: "\e611"; }
 
-.el-icon-z-tuku:before {
-  content: "\e7c3";
-}
+.el-icon-z-guanli:before { content: "\e7b1"; }
 
-.el-icon-z-hengxian:before {
-  content: "\e604";
-}
+.el-icon-z-tuku:before { content: "\e7c3"; }
 
-.el-icon-z-module-link:before {
-  content: "\e626";
-}
+.el-icon-z-hengxian:before { content: "\e604"; }
 
-.el-icon-z-quote:before {
-  content: "\e6d3";
-}
+.el-icon-z-module-link:before { content: "\e626"; }
 
-.el-icon-z-dakai1:before {
-  content: "\e6ba";
-}
+.el-icon-z-quote:before { content: "\e6d3"; }
 
-.el-icon-z-password:before {
-  content: "\e697";
-}
+.el-icon-z-dakai1:before { content: "\e6ba"; }
 
-.el-icon-z-save:before {
-  content: "\e60d";
-}
+.el-icon-z-password:before { content: "\e697"; }
 
-.el-icon-z-article:before {
-  content: "\e616";
-}
+.el-icon-z-save:before { content: "\e60d"; }
 
-.el-icon-z-ai-code:before {
-  content: "\e606";
-}
+.el-icon-z-article:before { content: "\e616"; }
 
-.el-icon-z-html:before {
-  content: "\e849";
-}
+.el-icon-z-ai-code:before { content: "\e606"; }
 
-.el-icon-z-wuxuliebiao1:before {
-  content: "\e677";
-}
+.el-icon-z-html:before { content: "\e849"; }
 
-.el-icon-z-save1:before {
-  content: "\e628";
-}
+.el-icon-z-wuxuliebiao1:before { content: "\e677"; }
 
-.el-icon-z-wenzhang-copy:before {
-  content: "\e643";
-}
+.el-icon-z-save1:before { content: "\e628"; }
 
-.el-icon-z-tubiao01:before {
-  content: "\e648";
-}
+.el-icon-z-wenzhang-copy:before { content: "\e643"; }
 
-.el-icon-z-computer:before {
-  content: "\e670";
-}
+.el-icon-z-tubiao01:before { content: "\e648"; }
 
-.el-icon-z-shuanglan:before {
-  content: "\e71e";
-}
+.el-icon-z-computer:before { content: "\e670"; }
 
-.el-icon-z-xinjian:before {
-  content: "\e60e";
-}
+.el-icon-z-shuanglan:before { content: "\e71e"; }
 
-.el-icon-z-daimakuai:before {
-  content: "\e69f";
-}
+.el-icon-z-xinjian:before { content: "\e60e"; }
 
-.el-icon-z-icon_font_small:before {
-  content: "\e669";
-}
+.el-icon-z-daimakuai:before { content: "\e69f"; }
 
-.el-icon-z-icon_font_large:before {
-  content: "\e66a";
-}
+.el-icon-z-icon_font_small:before { content: "\e669"; }
 
-.el-icon-z-redo:before {
-  content: "\e716";
-}
+.el-icon-z-icon_font_large:before { content: "\e66a"; }
 
-.el-icon-z-undo:before {
-  content: "\e733";
-}
+.el-icon-z-redo:before { content: "\e716"; }
 
-.el-icon-z-HTML:before {
-  content: "\e60f";
-}
+.el-icon-z-undo:before { content: "\e733"; }
 
-.el-icon-z-youxuliebiao:before {
-  content: "\e635";
-}
+.el-icon-z-HTML:before { content: "\e60f"; }
 
-.el-icon-z-h:before {
-  content: "\e603";
-}
+.el-icon-z-youxuliebiao:before { content: "\e635"; }
 
-.el-icon-z-h1:before {
-  content: "\e605";
-}
+.el-icon-z-h:before { content: "\e603"; }
 
-.el-icon-z-h2:before {
-  content: "\e607";
-}
+.el-icon-z-h1:before { content: "\e605"; }
 
-.el-icon-z-h3:before {
-  content: "\e608";
-}
+.el-icon-z-h2:before { content: "\e607"; }
 
-.el-icon-z-h4:before {
-  content: "\e609";
-}
+.el-icon-z-h3:before { content: "\e608"; }
 
-.el-icon-z-h5:before {
-  content: "\e60a";
-}
+.el-icon-z-h4:before { content: "\e609"; }
 
-.el-icon-z-xinjian1:before {
-  content: "\e65e";
-}
+.el-icon-z-h5:before { content: "\e60a"; }
 
-.el-icon-z-xinjian2:before {
-  content: "\e67c";
-}
+.el-icon-z-xinjian1:before { content: "\e65e"; }
 
-.el-icon-z-shanchuxian1:before {
-  content: "\e702";
-}
+.el-icon-z-xinjian2:before { content: "\e67c"; }
 
-.el-icon-z-xinjian3:before {
-  content: "\e686";
-}
+.el-icon-z-shanchuxian1:before { content: "\e702"; }
 
-.el-icon-z-italic:before {
-  content: "\e6bf";
-}
+.el-icon-z-xinjian3:before { content: "\e686"; }
 
-.el-icon-z-xinjian4:before {
-  content: "\e66b";
-}
+.el-icon-z-italic:before { content: "\e6bf"; }
 
-.el-icon-z-file-o:before {
-  content: "\e68b";
-}
+.el-icon-z-xinjian4:before { content: "\e66b"; }
 
-.el-icon-z-file-text-o:before {
-  content: "\e68c";
-}
+.el-icon-z-file-o:before { content: "\e68b"; }
 
-.el-icon-z-file-text:before {
-  content: "\e68d";
-}
+.el-icon-z-file-text-o:before { content: "\e68c"; }
 
-.el-icon-z-file:before {
-  content: "\e68f";
-}
+.el-icon-z-file-text:before { content: "\e68d"; }
 
-.el-icon-z-folder-o:before {
-  content: "\e696";
-}
+.el-icon-z-file:before { content: "\e68f"; }
 
-.el-icon-z-folder-open-o:before {
-  content: "\e698";
-}
+.el-icon-z-folder-o:before { content: "\e696"; }
 
-.el-icon-z-folder-open:before {
-  content: "\e699";
-}
+.el-icon-z-folder-open-o:before { content: "\e698"; }
 
-.el-icon-z-floppy-o:before {
-  content: "\e69a";
-}
+.el-icon-z-folder-open:before { content: "\e699"; }
+
+.el-icon-z-floppy-o:before { content: "\e69a"; }

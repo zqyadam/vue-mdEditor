@@ -33,9 +33,9 @@
       </section>
     </div>
     <!--  hidden dialogs -_-!!  -->
-    <linkDialog :options="{cm:cm, show:linkDialog}" @close="linkDialog = false"></linkDialog>
-    <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile="uploadingImageFile" @close="imageDialog = false"></imageDialog>
-    <!-- <newPostDialog :options="{cm:cm, show: newPostDialog}" @close="newPostDialog = false"></newPostDialog> -->
+    <linkDialog :options="{cm:cm, show:linkDialog}"></linkDialog>
+    <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile="uploadingImageFile"></imageDialog>
+    <tableDialog :options="{cm:cm, show:tableDialog}"></tableDialog>
     <openPostDialog :options="{cm:cm, show:openPostDialog}"></openPostDialog>
     <savePostDialog :options="{cm:cm, show:savePostDialog}"></savePostDialog>
   </div>
@@ -88,6 +88,7 @@ import 'prismjs/plugins/toolbar/prism-toolbar.css'
 // dialog components
 import linkDialog from './Editor/linkDialog'
 import imageDialog from './Editor/imageDialog'
+import tableDialog from './Editor/tableDialog'
 import openPostDialog from './Editor/openPostDialog'
 import savePostDialog from './Editor/savePostDialog'
 
@@ -118,6 +119,7 @@ export default {
         // dialog options
         linkDialog: false,
         imageDialog: false,
+        tableDialog: false,
         newPostDialog: false,
         openPostDialog: false,
         savePostDialog: false,
@@ -131,6 +133,7 @@ export default {
     components: {
       'linkDialog': linkDialog,
       'imageDialog': imageDialog,
+      'tableDialog': tableDialog,
       'openPostDialog': openPostDialog,
       'savePostDialog': savePostDialog
     },

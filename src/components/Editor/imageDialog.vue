@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :modal="false" v-model="options.show" title="上传图片" :close-on-press-escape="true" :close-on-click-modal="false" >
+  <el-dialog :modal="false" v-model="options.show" title="上传图片" :close-on-press-escape="true" :close-on-click-modal="false" @close="close">
     <el-upload class="avatar-uploader" :before-upload="upload" action="" :show-file-list="false" select :accept="accepts">
       <i class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
@@ -23,14 +23,17 @@ export default {
     },
     methods: {
       close: function() {
+        console.log('closing image dialog');
         this.options.cm.setOption('readOnly',false)
         this.options.cm.focus();
-        this.$emit('close')
+        this.$parent.imageDialog = false;
+        // this.$emit('close')
       },
       upload: function(file) {
         let filePromise = requestImageUploadFromLocal(file);
-        this.close();
         this.$emit('uploadingImageFile', filePromise);
+        // this.close();
+        this.$parent.imageDialog = false;
         return false;
       }
     }
