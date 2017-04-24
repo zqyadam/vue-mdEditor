@@ -5,6 +5,7 @@ import Editor from '../components/Editor'
 import Dashboard from '../components/Dashboard'
 import Posts from '../components/Dashboard/Posts'
 import Images from '../components/Dashboard/Images'
+import Category from '../components/Dashboard/Category'
 
 import { isLoggedIn } from '../api/api'
 
@@ -29,6 +30,13 @@ let router = new Router({
       path: '/dashboard/posts',
       name: 'posts',
       component: Posts,
+      meta: {
+        requiresAuth: true
+      }
+    },{
+      path: '/dashboard/category',
+      name: 'category',
+      component: Category,
       meta: {
         requiresAuth: true
       }

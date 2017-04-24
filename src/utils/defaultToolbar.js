@@ -1,6 +1,6 @@
 import { requestImageUploadFromLocal, createNewPost } from '../api/api.js'
 
-export const toolbar = ['newFile', 'openFile', 'saveFile', 'split', 'undo', 'redo', 'bold', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image','table', 'inlineCode', 'blockCode', 'split', 'previewMode', 'editMode', 'readMode', 'exchange'];
+export const toolbar = ['newFile', 'openFile', 'saveFile', 'split', 'undo', 'redo', 'bold', 'del', 'italic', 'quote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'hr', 'link', 'image', 'table', 'inlineCode', 'blockCode', 'split', 'previewMode', 'editMode', 'readMode', 'exchange','help'];
 
 export const toolbarIconsClass = {
   'newFile': 'z-file-o',
@@ -9,6 +9,7 @@ export const toolbarIconsClass = {
   'undo': 'z-undo',
   'redo': 'z-redo',
   'bold': 'z-bold',
+  'del': 'z-shanchuxian',
   'italic': 'z-italic',
   'quote': 'z-yinyong',
   'h1': 'z-h',
@@ -22,13 +23,14 @@ export const toolbarIconsClass = {
   'hr': 'z-hengxian',
   'link': 'z-module-link',
   'image': 'z-tupian',
-  'table':'z-table',
+  'table': 'z-table',
   'inlineCode': 'z-ai-code',
   'blockCode': 'z-daimakuai',
   'previewMode': 'z-shuanglan',
   'editMode': 'z-bianji',
   'readMode': 'z-computer',
-  'exchange': 'z-exchange'
+  'exchange': 'z-exchange',
+  'help':'z-help'
 }
 
 export const toolbarIconTips = {
@@ -38,6 +40,7 @@ export const toolbarIconTips = {
   'undo': '撤销(Ctrl+Z)',
   'redo': '重做',
   'bold': '加粗(Ctrl+B)',
+  'del': '删除线',
   'italic': '斜体(Ctrl+I)',
   'quote': '引用(Ctrl+Q)',
   'h1': '标题1(Ctrl+1)',
@@ -51,13 +54,14 @@ export const toolbarIconTips = {
   'hr': '横线(Ctrl+H)',
   'link': '链接(Ctrl+L或Ctrl+Shift+L)',
   'image': '图像(Ctrl+Shift+P)',
-  'table':'表格',
+  'table': '表格',
   'inlineCode': '行内代码(Ctrl+K)',
   'blockCode': '代码块(Ctrl+Shift+K)',
   'previewMode': '实时预览',
   'editMode': '编辑模式',
   'readMode': '阅读模式',
-  'exchange': '左右交换'
+  'exchange': '左右交换',
+  'help':'使用帮助'
 }
 export const toolbarHandlers = {
   newFile: function(cm, _this) {
@@ -89,6 +93,10 @@ export const toolbarHandlers = {
   },
   bold: function(cm) {
     Common.setWrapLabel(cm, '**');
+    cm.focus();
+  },
+  del:function(cm) {
+    Common.setWrapLabel(cm, '~~');
     cm.focus();
   },
   italic: function(cm) {
@@ -143,7 +151,7 @@ export const toolbarHandlers = {
     _this.cm.setOption('readOnly', true)
     _this.imageDialog = true;
   },
-  table:function(cm, _this) {
+  table: function(cm, _this) {
     _this.tableDialog = true;
   },
   inlineCode: function(cm) {
@@ -313,10 +321,10 @@ function savePost(_this, cb) {
   if (_this.savingPost) {
     _this.$message({
       message: '正在保存，请稍后重试',
-        type: 'warning',
-        showClose: true
+      type: 'warning',
+      showClose: true
     })
-    return 
+    return
   }
 
   let postTitle = '未命名';

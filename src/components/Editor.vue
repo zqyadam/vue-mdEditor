@@ -531,6 +531,7 @@ export default {
   margin: 5px;
   padding: 15px;
   border: 2px dashed rgb(187, 187, 187);
+  min-height:calc(100% - 10px);
   font-size: 18px;
   font-family: 'Consolas', '微软雅黑';
 }
