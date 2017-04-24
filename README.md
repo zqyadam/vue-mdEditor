@@ -39,8 +39,12 @@ password :111
     - [x] 无序列表(Ctrl+Shift+U)
     - [x] 有序列表(Ctrl+Shift+O)
     - [x] 横线(Ctrl+H)
+    - [ ] 表格
     - [x] 链接(Ctrl+L或Ctrl+Shift+L)
-    - [x] 图片上传（对话框上传/拖拽上传/粘贴上传）
+    - [x] 图片上传
+    	- [x] 对话框上传
+    	- [x] 拖拽上传
+    	- [x] 粘贴上传
     - [x] 行内代码(Ctrl+K)
     - [x] 代码块(Ctrl+Shift+K)
     - [x] 实时预览（双栏显示）
@@ -51,7 +55,7 @@ password :111
     - [x] 向后添加行(Ctrl+Enter)
     - [x] 向前添加行(Ctrl+Shift+Enter)
 	- 编辑器
-    - [x] 同步滚动
+    - [x] 双向同步滚动
     - [x] TOC目录
     - [x] 拖拽打开本地MD文件
 - [ ] 管理
