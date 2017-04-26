@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="4">列数:</el-col>
       <el-col :span="8">
-        <el-input-number v-model="colNum" :min="2" size="small"></el-input-number>
+        <el-input-number v-model="colNum" :min="1" size="small"></el-input-number>
       </el-col>
     </el-row>
     <el-row type="flex" justify="center" style="margin-top:20px;">
@@ -46,6 +46,37 @@ export default {
         this.$parent.tableDialog = false;
       },
       confirm: function() {
+        let that = this.$parent;
+        let headerSplit = '---------';
+        let spaceSplit = '    ';
+        let columnSplit = '|';
+        let pos = that.cm.getCursor();
+        let tableStr = '\n'
+        for (let i = 0; i <= this.rowNum; i++) {
+          // title
+          if (i == 1) {
+            for (let j = 0; j <= this.colNum; j++) {
+              tableStr += columnSplit;
+              tableStr += headerSplit;
+            }
+            tableStr += columnSplit;
+            tableStr += '\n';
+            continue;
+          } else {
+            for (let j = 0; j <= this.colNum; j++) {
+              tableStr += columnSplit;
+              tableStr += spaceSplit;
+            }
+            tableStr += columnSplit;
+            tableStr += '\n';
+          }
+        }
+        console.log(tableStr);
+        that.cm.replaceRange(tableStr, {
+          line: pos.line + 1,
+          ch: 0
+        });
+        tableStr = null;
         this.$parent.tableDialog = false;
       }
     }
