@@ -47,7 +47,6 @@ export default {
         let _this = this;
         getAllPosts().then(function(posts) {
           _this.postArr = posts;
-          posts = null;
         }, function(err) {
           this.$message({
             message: '获取文件列表失败！',
@@ -59,6 +58,7 @@ export default {
       },
       close: function() {
       	console.log('closing openPostDialog');
+      	this.postArr = null;
         this.$parent.openPostDialog = false;
       },
       openWebPost: function(row) {

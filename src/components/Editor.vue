@@ -28,14 +28,17 @@
       </section>
       <section :style="{width:readWidth+'%'}" style="max-width:1200px" v-show="readShow">
         <div class="previewer-container" id="previewer">
-          <div class="markdown-body" id="HTMLContent" v-html="HTMLContent"></div>
+          <div class="markdown-body" id="HTMLContent" v-html="HTMLContent">
+            <!-- {{HTMLContent}} -->
+          </div>
+          <!--  -->
         </div>
       </section>
     </div>
-    <!--  hidden dialogs -_-!!  -->
+     <!-- hidden dialogs -_-!!  -->
     <linkDialog :options="{cm:cm, show:linkDialog}"></linkDialog>
     <imageDialog :options="{cm:cm, show: imageDialog}" @uploadingImageFile="uploadingImageFile"></imageDialog>
-    <tableDialog :options="{cm:cm, show:tableDialog}"></tableDialog>
+    <!-- <tableDialog :options="{cm:cm, show:tableDialog}"></tableDialog> -->
     <openPostDialog :options="{cm:cm, show:openPostDialog}"></openPostDialog>
     <savePostDialog :options="{cm:cm, show:savePostDialog}"></savePostDialog>
   </div>
@@ -70,7 +73,7 @@ import marked from '../utils/markdownSettings.js'
 import 'github-markdown-css/github-markdown.css';
 
 
-import fakeData from '../fake/data.js'
+// import fakeData from '../fake/data.js'
 
 
 // hightlilght
@@ -88,7 +91,7 @@ import 'prismjs/plugins/toolbar/prism-toolbar.css'
 // dialog components
 import linkDialog from './Editor/linkDialog'
 import imageDialog from './Editor/imageDialog'
-import tableDialog from './Editor/tableDialog'
+// import tableDialog from './Editor/tableDialog'
 import openPostDialog from './Editor/openPostDialog'
 import savePostDialog from './Editor/savePostDialog'
 
@@ -97,8 +100,10 @@ export default {
   data() {
       return {
         MdContent: '',
+        HTMLContent:'',
         tocTree: [],
         cm: {},
+        rendering: false,
         webPost: {},
         currentFileInfo: {},
         // layout options
@@ -127,13 +132,16 @@ export default {
         afterSaveCallback: null,
         // upload image
         uploadingImage: false,
-        uploadingImageText: ''
+        uploadingImageText: '',
+        // for test
+        time1:0,
+        time2:0
       }
     },
     components: {
       'linkDialog': linkDialog,
       'imageDialog': imageDialog,
-      'tableDialog': tableDialog,
+      // 'tableDialog': tableDialog,
       'openPostDialog': openPostDialog,
       'savePostDialog': savePostDialog
     },
@@ -255,22 +263,41 @@ export default {
       },
     },
     computed: {
-      HTMLContent: function() {
-        let Content = marked(this.MdContent);
+      // HTMLContent: function() {
+      //   this.$nextTick(function() {
+      //     // DOM 更新了
+      //     let time1 = new Date().getTime();
+      //     Prism.highlightAll()
+      //     let time2 = new Date().getTime();
+      //     // console.log('code render time:' + (time2 - time1));
+      //     // console.log('all render time:' + (time2 - t1));
+      //   })
+      //   let t1 = new Date().getTime();
+      //   let Content = marked(this.MdContent);
+      //   this.tocTree = marked.tocToTree();
+      //   let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, this.tocTreeToHtml(this.tocTree))
+      //   let t2 = new Date().getTime();
+      //   return html;
+      // }
+    },
+    watch:{
+      MdContent:function(newValue) {
+        let t1 = new Date().getTime();
+        let Content = marked(newValue);
         this.tocTree = marked.tocToTree();
         let html = Content.replace(/<p class="markdown-toc">(.*)<\/p>/gi, this.tocTreeToHtml(this.tocTree))
-        return html;
-      }
-    },
-    watch: {
-      HTMLContent: function() {
-        let _this = this;
+        let t2 = new Date().getTime();
+        // console.log('content render time: ' + (t2 - t1));
         this.$nextTick(function() {
           // DOM 更新了
+          let time1 = new Date().getTime();
           Prism.highlightAll()
+          let time2 = new Date().getTime();
+          // console.log('code render time:' + (time2 - time1));
+          // console.log('all render time:' + (time2 - t1));
         })
-      },
-
+        this.HTMLContent = html;
+      }
     },
     mounted: function() {
       let _this = this;
@@ -295,7 +322,7 @@ export default {
       document.getElementById('previewer').addEventListener('scroll', _this.previewerScroll)
 
       // 内容变化监听
-      this.cm.on('change', (cm, changeObj) => {
+      this.cm.on('change', (cm) => {
         if (!_this.rendering) {
           setTimeout(function() {
             _this.MdContent = cm.getValue();
@@ -531,7 +558,6 @@ export default {
   margin: 5px;
   padding: 15px;
   border: 2px dashed rgb(187, 187, 187);
-  min-height:calc(100% - 10px);
   font-size: 18px;
   font-family: 'Consolas', '微软雅黑';
 }
